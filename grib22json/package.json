@@ -1,0 +1,18 @@
+{
+  "name": "grib22json",
+  "version": "1.0.0",
+  "description": "Tiny node.js library to parse the content of grib2 files provided by DWD",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UdSAES/grib2-simple.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1"
+  }
+}
