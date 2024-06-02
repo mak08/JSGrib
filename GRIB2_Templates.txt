@@ -1,0 +1,500 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; GRIB2 Templates https://codes.ecmwf.int/grib/format/grib2/templates/
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Section 3 Templates
+
+Section 3 - Template 0 : Stretched and Rotated Latitude/longitude (or equidistant cylindrical, or Plate Carree)
+; Octets    Key Type    Content
+15  shapeOfTheEarth codetable   Shape of the earth (see Code Table 3.2)
+16  scaleFactorOfRadiusOfSphericalEarth unsigned    Scale factor of radius of spherical earth
+17-20   scaledValueOfRadiusOfSphericalEarth unsigned    Scaled value of radius of spherical earth
+21  scaleFactorOfEarthMajorAxis unsigned    Scale factor of major axis of oblate spheroid earth
+22-25   scaledValueOfEarthMajorAxis unsigned    Scaled value of major axis of oblate spheroid earth
+26  scaleFactorOfEarthMinorAxis unsigned    Scale factor of minor axis of oblate spheroid earth
+27-30   scaledValueOfEarthMinorAxis unsigned    Scaled value of minor axis of oblate spheroid earth
+31-34   Ni  unsigned    Ni - number of points along a parallel
+35-38   Nj  unsigned    Nj - number of points along a meridian
+39-42   basicAngleOfTheInitialProductionDomain  unsigned    Basic angle of the initial production domain (see Note 1)
+43-46   subdivisionsOfBasicAngle    unsigned    Subdivisions of basic angle used to define extreme longitudes and latitudes, and direction increments (see Note 1)
+47-50   latitudeOfFirstGridPoint    signed  La1 - latitude of first grid point (see Note 1)
+51-54   longitudeOfFirstGridPoint   signed  Lo1 - longitude of first grid point (see Note 1)
+55  resolutionAndComponentFlags codeflag    Resolution and component flags (see Flag Table 3.3)
+56-59   latitudeOfLastGridPoint signed  La2 - latitude of last grid point (see Note 1)
+60-63   longitudeOfLastGridPoint    signed  Lo2 - longitude of last grid point (see Note 1)
+64-67   iDirectionIncrement unsigned    Di - i direction increment (see Notes 1 and 5)
+68-71   jDirectionIncrement unsigned    Dj - j direction increment (see Notes 1 and 5)
+72  scanningMode    codeflag    Scanning mode (flags - see Flag Table 3.4)
+73-nn   pl  unsigned    List of number of points along each meridian or parallel (These octets are only present for quasi-regular grids as described in notes 2 and 3)
+; Notes:
+; ( 1) Basic angle of the initial production domain and subdivisions of this basic angle are provided to manage cases where the recommended unit of 10-6 degrees is not applicable to describe the extreme longitudes and latitudes, and direction increments. For these last six descriptors, unit is equal to the ratio of the basic angle and the subdivisions number. For ordinary cases, zero and missing values should be coded, equivalent to respective values of 1 and 106 (10-6 degrees unit).
+; ( 2) For data on a quasi-regular grid, where all the rows or columns do not necessarily have the same number of grid points, either Ni (Octets 31-34) or Nj (Octets 35-38) and the corresponding Di (Octets 64-67) or Dj (Octets 68-71) shall be coded with all bits set to 1 (missing). The actual number of points along each parallel or meridian shall be coded in the octets immediately following the Grid Definition Template (Octets [xx+1] - nn), as described in the description of the Grid Definition Section.
+; ( 3) A quasi-regular grid is only defined for appropriate grid scanning modes. Either rows or columns, but not both simultaneously, may have variable numbers of points or variable spacing. The first point in each row (column) shall be positioned at the meridian (parallel) indicated by Octets 47-54. The grid points shall be evenly spaced in latitude (longitude).
+; ( 4) A scaled value of radius of spherical Earth, or major or minor axis of oblate spheroid Earth is derived from applying appropriate scale factor to the value expressed in metres.
+; ( 5) It is recommended to use unsigned direction increments
+; ( 6) In most cases, multiplying Ni (octets 31–34) by Nj (octets 35–38) yields the total number of points in the grid. However, this may not be true if bit 8 of the scanning mode flags (octet 72) is set to 1
+
+
+Section 3 - Template 1 : Rotated Latitude/longitude (or equidistant cylindrical, or Plate Carree)
+; Octets    Key Type    Content
+15  shapeOfTheEarth codetable   Shape of the earth (see Code Table 3.2)
+16  scaleFactorOfRadiusOfSphericalEarth unsigned    Scale factor of radius of spherical earth
+17-20   scaledValueOfRadiusOfSphericalEarth unsigned    Scaled value of radius of spherical earth
+21  scaleFactorOfEarthMajorAxis unsigned    Scale factor of major axis of oblate spheroid earth
+22-25   scaledValueOfEarthMajorAxis unsigned    Scaled value of major axis of oblate spheroid earth
+26  scaleFactorOfEarthMinorAxis unsigned    Scale factor of minor axis of oblate spheroid earth
+27-30   scaledValueOfEarthMinorAxis unsigned    Scaled value of minor axis of oblate spheroid earth
+31-34   Ni  unsigned    Ni - number of points along a parallel
+35-38   Nj  unsigned    Nj - number of points along a meridian
+39-42   basicAngleOfTheInitialProductionDomain  unsigned    Basic angle of the initial production domain (see Note 1)
+43-46   subdivisionsOfBasicAngle    unsigned    Subdivisions of basic angle used to define extreme longitudes and latitudes, and direction increments (see Note 1)
+47-50   latitudeOfFirstGridPoint    signed  La1 - latitude of first grid point (see Note 1)
+51-54   longitudeOfFirstGridPoint   signed  Lo1 - longitude of first grid point (see Note 1)
+55  resolutionAndComponentFlags codeflag    Resolution and component flags (see Flag Table 3.3)
+56-59   latitudeOfLastGridPoint signed  La2 - latitude of last grid point (see Note 1)
+60-63   longitudeOfLastGridPoint    signed  Lo2 - longitude of last grid point (see Note 1)
+64-67   iDirectionIncrement unsigned    Di - i direction increment (see Notes 1 and 5)
+68-71   jDirectionIncrement unsigned    Dj - j direction increment (see Notes 1 and 5)
+72  scanningMode    codeflag    Scanning mode (flags - see Flag Table 3.4)
+73-76   latitudeOfSouthernPole  signed  Latitude of the southern pole of projection
+77-80   longitudeOfSouthernPole unsigned    Longitude of the southern pole of projection
+81-84   angleOfRotation real    Angle of rotation of projection
+85-nn   pl  unsigned    List of number of points along each meridian or parallel (These octets are only present for quasi-regular grids as described in note 3)
+; Notes:
+; ( 1) Basic angle of the initial production domain and subdivisions of this basic angle are provided to manage cases where the recommended unit of 10-6 degrees is not applicable to describe the extreme longitudes and latitudes, and direction increments. For these last six descriptors, unit is equal to the ratio of the basic angle and the subdivisions number. For ordinary cases, zero and missing values should be coded, equivalent to respective values of 1 and 106 (10-6 degrees unit).
+; ( 2) Three parameters define a general latitude/longitude coordinate system, formed by a general rotation of the sphere. One choice for these parameters is:
+;      (a) The geographic latitude in degrees of the southern pole of the coordinate system, thetap for example.
+;      (b) The geographic longitude in degrees of the southern pole of the coordinate system, lambdap for example.
+;      (c) The angle of rotation in degrees about the new polar axis (measured clockwise when looking from the southern to the northern pole) of the coordinate system, assuming the new axis to have been obtained by first rotating the sphere through lambdap degrees about the geographic polar axis, and then rotating through (90 + thetap) degrees so that the southern pole moved along the (previously rotated) Greenwich meridian.
+; ( 3) See Note (3) under Grid Definition Template 3.0.
+
+Section 3 - Template 2 : Stretched Latitude/longitude (or equidistant cylindrical, or Plate Carree)
+; Octets    Key Type    Content
+15  shapeOfTheEarth codetable   Shape of the earth (see Code Table 3.2)
+16  scaleFactorOfRadiusOfSphericalEarth unsigned    Scale factor of radius of spherical earth
+17-20   scaledValueOfRadiusOfSphericalEarth unsigned    Scaled value of radius of spherical earth
+21  scaleFactorOfEarthMajorAxis unsigned    Scale factor of major axis of oblate spheroid earth
+22-25   scaledValueOfEarthMajorAxis unsigned    Scaled value of major axis of oblate spheroid earth
+26  scaleFactorOfEarthMinorAxis unsigned    Scale factor of minor axis of oblate spheroid earth
+27-30   scaledValueOfEarthMinorAxis unsigned    Scaled value of minor axis of oblate spheroid earth
+31-34   Ni  unsigned    Ni - number of points along a parallel
+35-38   Nj  unsigned    Nj - number of points along a meridian
+39-42   basicAngleOfTheInitialProductionDomain  unsigned    Basic angle of the initial production domain (see Note 1)
+43-46   subdivisionsOfBasicAngle    unsigned    Subdivisions of basic angle used to define extreme longitudes and latitudes, and direction increments (see Note 1)
+47-50   latitudeOfFirstGridPoint    signed  La1 - latitude of first grid point (see Note 1)
+51-54   longitudeOfFirstGridPoint   signed  Lo1 - longitude of first grid point (see Note 1)
+55  resolutionAndComponentFlags codeflag    Resolution and component flags (see Flag Table 3.3)
+56-59   latitudeOfLastGridPoint signed  La2 - latitude of last grid point (see Note 1)
+60-63   longitudeOfLastGridPoint    signed  Lo2 - longitude of last grid point (see Note 1)
+64-67   iDirectionIncrement unsigned    Di - i direction increment (see Notes 1 and 5)
+68-71   jDirectionIncrement unsigned    Dj - j direction increment (see Notes 1 and 5)
+72  scanningMode    codeflag    Scanning mode (flags - see Flag Table 3.4)
+73-76   latitudeOfThePoleOfStretching   signed  Latitude of the pole of stretching
+77-80   longitudeOfThePoleOfStretching  signed  Longitude of the pole of stretching
+81-84   stretchingFactorScaled  unsigned    Stretching factor
+85-nn   pl  unsigned    List of number of points along each meridian or parallel (These octets are only present for quasi-regular grids as described in note 3)
+; Notes:
+; ( 1) Basic angle of the initial production domain and subdivisions of this basic angle are provided to manage cases where the recommended unit of 10-6 degrees is not applicable to describe the extreme longitudes and latitudes, and direction increments. For these last six descriptors, unit is equal to the ratio of the basic angle and the subdivisions number. For ordinary cases, zero and missing values should be coded, equivalent to respective values of 1 and 106 (10-6 degrees unit).
+; ( 2) The stretching is defined by three parameters:
+;      (a) The latitude in degrees (measured in the model coordinate system) of the "pole of stretching";
+;      (b) The longitude in degrees (measured in the model coordinate system) of the "pole of stretching"; and
+;      (c) The stretching factor C in units of 10-6 represented as an integer. The stretching is defined by representing data uniformly in a coordinate system with longitude Y and latitude X1, where:
+; X1 = sin-1 ( (1-C2)+(1+C2)sinX ) / ( (1+C2)+(1-C2)sinX) )
+; and Y and X are longitude and latitude in a coordinate system in which the "pole of stretching" is the northern pole. C = 1 gives uniform resolution, while C > 1 give enhanced resolution around the pole of stretching.
+; ( 3) See Note (3) under Grid Definition Template 3.0.
+
+
+Section 3 - Template 10 : Mercator
+; Octets  Key Type    Content
+15  shapeOfTheEarth codetable   Shape of the earth (see Code Table 3.2)
+16  scaleFactorOfRadiusOfSphericalEarth unsigned    Scale factor of radius of spherical earth
+17-20   scaledValueOfRadiusOfSphericalEarth unsigned    Scaled value of radius of spherical earth
+21  scaleFactorOfMajorAxisOfOblateSpheroidEarth unsigned    Scale factor of major axis of oblate spheroid earth
+22-25   scaledValueOfMajorAxisOfOblateSpheroidEarth unsigned    Scaled value of major axis of oblate spheroid earth
+26  scaleFactorOfMinorAxisOfOblateSpheroidEarth unsigned    Scale factor of minor axis of oblate spheroid earth
+27-30   scaledValueOfMinorAxisOfOblateSpheroidEarth unsigned    Scaled value of minor axis of oblate spheroid earth
+31-34   Ni  unsigned    Ni - number of points along a parallel
+35-38   Nj  unsigned    Nj - number of points along a meridian
+39-42   latitudeOfFirstGridPoint    signed  La1 - latitude of first grid point
+43-46   longitudeOfFirstGridPoint   signed  Lo1 - longitude of first grid point
+47  resolutionAndComponentFlags codeflag    Resolution and component flags (see Flag Table 3.3)
+48-51   LaD signed  LaD - Latitude(s) at which the Mercator projection intersects the Earth (Latitude(s) where Di and Dj are specified)
+52-55   latitudeOfLastGridPoint signed  La2 - latitude of last grid point
+56-59   longitudeOfLastGridPoint    signed  Lo2 - longitude of last grid point
+60  scanningMode    codeflag    Scanning mode (flags - see Flag Table 3.4)
+61-64   orientationOfTheGrid    unsigned    Orientation of the grid, angle between i direction on the map and the equator (see Note 1)
+65-68   Di  unsigned    Di - longitudinal direction grid length (see Note 2)
+69-72   Dj  unsigned    Dj - latitudinal direction grid length (see Note 2)
+73-nn   pl  unsigned    List of number of points along each meridian or parallel (These octets are only present for quasi-regular grids as described in notes 2 and 3 of GDT 3.1)
+; Notes:
+; ( 1) Limited to the range of 0 to 90 degrees; if the angle of orientation of the grid is neither 0 nor 90 degrees, Di and Dj must be equal to each other.
+; ( 2) Grid lengths are in units of 10-3 m, at the latitude specified by LaD.
+; ( 3) A scaled value of radius of spherical Earth, or major or minor axis of oblate spheroid Earth is derived from applying appropriate scale factor to the value expressed in metres.
+
+Section 3 - Template 40 : Gaussian latitude/longitude
+; Octets    Key Type    Content
+15  shapeOfTheEarth codetable   Shape of the earth (see Code Table 3.2)
+16  scaleFactorOfRadiusOfSphericalEarth unsigned    Scale factor of radius of spherical earth
+17-20   scaledValueOfRadiusOfSphericalEarth unsigned    Scaled value of radius of spherical earth
+21  scaleFactorOfMajorAxisOfOblateSpheroidEarth unsigned    Scale factor of major axis of oblate spheroid earth
+22-25   scaledValueOfMajorAxisOfOblateSpheroidEarth unsigned    Scaled value of major axis of oblate spheroid earth
+26  scaleFactorOfMinorAxisOfOblateSpheroidEarth unsigned    Scale factor of minor axis of oblate spheroid earth
+27-30   scaledValueOfMinorAxisOfOblateSpheroidEarth unsigned    Scaled value of minor axis of oblate spheroid earth
+31-34   Ni  unsigned    Ni - number of points along a parallel
+35-38   Nj  unsigned    Nj - number of points along a meridian
+39-42   basicAngleOfTheInitialProductionDomain  unsigned    Basic angle of the initial production domain (see Note 1)
+43-46   subdivisionsOfBasicAngle    unsigned    Subdivisions of basic angle used to define extreme longitudes and latitudes, and direction increments (see Note 1)
+47-50   latitudeOfFirstGridPoint    signed  La1 - latitude of first grid point (see Note 1)
+51-54   longitudeOfFirstGridPoint   signed  Lo1 - longitude of first grid point (see Note 1)
+55  resolutionAndComponentFlags codeflag    Resolution and component flags (see Flag Table 3.3)
+56-59   latitudeOfLastGridPoint signed  La2 - latitude of last grid point (see Note 1)
+60-63   longitudeOfLastGridPoint    signed  Lo2 - longitude of last grid point (see Note 1)
+64-67   iDirectionIncrement unsigned    Di - i direction increment (see Notes 1 and 5)
+68-71   N   unsigned    N - number of parallels between a pole and the equator (see Note 2)
+72  scanningMode    codeflag    Scanning mode (flags - see Flag Table 3.4)
+73-nn   pl  unsigned    List of number of points along each meridian or parallel (These octets are only present for quasi-regular grids as described in note 4)
+; Notes:
+; ( 1) Basic angle of the initial production domain and subdivisions of this basic angle are provided to manage cases where the recommended unit of 10-6 degrees is not applicable to describe the extreme longitudes and latitudes, and direction increments. For these last six descriptors, unit is equal to the ratio of the basic angle and the subdivisions number. For ordinary cases, zero and missing values should be coded, equivalent to respective values of 1 and 106 (10-6 degrees unit).
+; ( 2) The number of parallels between a pole and the equator is used to establish the variable (Gaussian) spacing of the parallels; this value must always be given.
+; ( 3) A scaled value of radius of spherical Earth, or major or minor axis of oblate spheroid Earth is derived from applying appropriate scale factor to the value expressed in metres.
+; ( 4) A quasi-regular grid is only defined for appropriate grid scanning modes. Either rows or columns, but not both simultaneously, may have variable numbers of points. The first point in each row (column) shall be positioned at the meridian (parallel) indicated by Octets 47-54. The grid points shall be evenly spaced in latitude (longitude).
+; ( 5) It is recommended to use unsigned direction increments
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Section 4 Templates
+
+Section 4 - Template 0 : Derived forecasts based on a cluster of ensemble members over a circular area at a horizontal level or in a horizontal layer at a point in time
+; Octets    Key Type    Content
+10  parameterCategory   codetable   Parameter category (see Code Table 4.1).
+11  parameterNumber codetable   Parameter number (see Code Table 4.2).
+12  typeOfGeneratingProcess codetable   Type of generating process (see Code Table 4.3)
+13  backgroundProcess   unsigned    Background generating process identifier (defined by originating centre)
+14  generatingProcessIdentifier unsigned    Analysis or forecast generating processes identifier (defined by originating centre)
+15-16   hoursAfterDataCutoff    unsigned    Hours of observational data cutoff after reference time (see Note 1)
+17  minutesAfterDataCutoff  unsigned    Minutes of observational data cutoff after reference time
+18  indicatorOfUnitOfTimeRange  codetable   Indicator of unit of time range (see Code Table 4.4)
+19-22   forecastTime    signed  Forecast time in units defined by octet 18
+23  typeOfFirstFixedSurface codetable   Type of first fixed surface (see Code Table 4.5)
+24  scaleFactorOfFirstFixedSurface  signed  Scale factor of first fixed surface
+25-28   scaledValueOfFirstFixedSurface  unsigned    Scaled value of first fixed surface
+29  typeOfSecondFixedSurface    codetable   Type of second fixed surface (see Code Table 4.5)
+30  scaleFactorOfSecondFixedSurface signed  Scale factor of second fixed surface
+31-34   scaledValueOfSecondFixedSurface unsigned    Scaled value of second fixed surface
+; ( 1) Hours greater than 65534 will be coded as 65534.
+
+Section 4 - Template 3 : Derived forecasts based on a cluster of ensemble members over a rectangular area at a horizontal level or in a horizontal layer at a point in time
+; Octets  Key Type    Content
+10  parameterCategory   codetable   Parameter category (see Code Table 4.1)
+11  parameterNumber codetable   Parameter number (see Code Table 4.2)
+12  typeOfGeneratingProcess codetable   Type of generating process (see Code Table 4.3)
+13  backgroundProcess   unsigned    Background generating process identifier (defined by originating Centre)
+14  generatingProcessIdentifier unsigned    Forecast generating process identifier (defined by originating Centre)
+15-16   hoursAfterDataCutoff    unsigned    Hours after reference time of data cutoff (see Note 1)
+17  minutesAfterDataCutoff  unsigned    Minutes after reference time of data cutoff
+18  indicatorOfUnitOfTimeRange  codetable   Indicator of unit of time range (see Code Table 4.4)
+19-22   forecastTime    signed  Forecast time in units defined by octet 18
+23  typeOfFirstFixedSurface codetable   Type of first fixed surface (see Code Table 4.5)
+24  scaleFactorOfFirstFixedSurface  signed  Scale factor of first fixed surface
+25-28   scaledValueOfFirstFixedSurface  unsigned    Scaled value of first fixed surface
+29  typeOfSecondFixedSurface    codetable   Type of second fixed surface (see Code Table 4.5)
+30  scaleFactorOfSecondFixedSurface signed  Scale factor of second fixed surface
+31-34   scaledValueOfSecondFixedSurface unsigned    Scaled value of second fixed surface
+35  derivedForecast codetable   Derived forecast (see Code Table 4.7)
+36  numberOfForecastsInEnsemble unsigned    Number of forecasts in the ensemble (N)
+37  clusterIdentifier   unsigned    Cluster identifier
+38  NH  unsigned    Number of cluster to which the high resolution control belongs
+39  NL  unsigned    Number of cluster to which the low resolution control belongs
+40  totalNumberOfClusters   unsigned    Total number of clusters
+41  clusteringMethod    codetable   Clustering method (see Code Table 4.8)
+42-45   northernLatitudeOfClusterDomain unsigned    Northern latitude of cluster domain
+46-49   southernLatitudeOfClusterDomain unsigned    Southern latitude of cluster domain
+50-53   easternLongitudeOfClusterDomain unsigned    Eastern longitude of cluster domain
+54-57   westernLongitudeOfClusterDomain unsigned    Western longitude of cluster domain
+58  numberOfForecastsInTheCluster   unsigned    NC - Number of forecasts in the cluster
+59  scaleFactorOfStandardDeviation  unsigned    Scale factor of standard deviation in the cluster
+60-63   scaledValueOfStandardDeviation  unsigned    Scaled value of standard deviation in the cluster
+64  scaleFactorOfDistanceFromEnsembleMean   unsigned    Scale factor of distance of the cluster from ensemble mean
+65-68   scaledValueOfDistanceFromEnsembleMean   unsigned    Scaled value of distance of the cluster from ensemble mean
+69-(68+NC)          List of NC ensemble forecast numbers (NC is given in octet 58)
+; ( 1) Hours greater than 65534 will be coded as 65534.
+
+Section 4 - Template 8 : Average, accumulation, and/or extreme values or other statistically processed values at a horizontal level or in a horizontal layer in a continuous or non- continuous time interval
+; Octets  Key Type    Content
+10  parameterCategory   codetable   Parameter category (see Code Table 4.1)
+11  parameterNumber codetable   Parameter number (see Code Table 4.2)
+12  typeOfGeneratingProcess codetable   Type of generating process (see Code Table 4.3)
+13  backgroundProcess   unsigned    Background generating process identifier (defined by originating Centre)
+14  generatingProcessIdentifier unsigned    Analysis or Forecast generating process identifier (defined by originating Centre)
+15-16   hoursAfterDataCutoff    unsigned    Hours after reference time of data cut-off (see Note 1)
+17  minutesAfterDataCutoff  unsigned    Minutes after reference time of data cut-off
+18  indicatorOfUnitOfTimeRange  codetable   Indicator of unit of time range (see Code Table 4.4)
+19-22   forecastTime    signed  Forecast time in units defined by octet 18 (see Note 2)
+23  typeOfFirstFixedSurface codetable   Type of first fixed surface (see Code Table 4.5)
+24  scaleFactorOfFirstFixedSurface  signed  Scale factor of first fixed surface
+25-28   scaledValueOfFirstFixedSurface  unsigned    Scaled value of first fixed surface
+29  typeOfSecondFixedSurface    codetable   Type of second fixed surface (see Code Table 4.5)
+30  scaleFactorOfSecondFixedSurface signed  Scale factor of second fixed surface
+31-34   scaledValueOfSecondFixedSurface unsigned    Scaled value of second fixed surface
+35-36   yearOfEndOfOverallTimeInterval  unsigned    Year |
+37  monthOfEndOfOverallTimeInterval unsigned    Month |
+38  dayOfEndOfOverallTimeInterval   unsigned    Day |Time of end of overall time interval
+39  hourOfEndOfOverallTimeInterval  unsigned    Hour |
+40  minuteOfEndOfOverallTimeInterval    unsigned    Minute |
+41  secondOfEndOfOverallTimeInterval    unsigned    Second
+42  numberOfTimeRange   unsigned    n - Number of time range specifications describing the time intervals used to calculate the statistically processed field
+43-46   numberOfMissingInStatisticalProcess unsigned    Total number of data values missing in statistical process.
+47-58    field1 nyi       Specification of the outermost (or only) time range over which statistical processing is done
+47  typeOfStatisticalProcessing codetable   Statistical process used to calculate the processed field from the field at each time increment during the time range (see Code Table 4.10)
+48  typeOfTimeIncrement codetable   Type of time increment between successive fields used in the statistical processing (see Code Table 4.11)
+49  indicatorOfUnitForTimeRange codetable   Indicator of unit of time for time range over which statistical processing is done (see Code Table 4.4)
+50-53   lengthOfTimeRange   unsigned    Length of the time range over which statistical processing is done, in units defined by the previous octet
+54  indicatorOfUnitForTimeIncrement codetable   Indicator of unit of time for the increment between the successive fields used (see Code Table 4.4)
+55-58   timeIncrement   unsigned    Time increment between successive fields, in units defined by the previous octet (see Notes 3 and 4)
+59-nn   field2 nyi        These octets are included only if n>1, where nn = 46 + 12 * n
+59-70   field3 nyi        As octets 47 to 58, next innermost step of processing
+71-nn   field4 nyi        Additional time range specifications, included in accordance with the value of n. Contents as octets 47 to 58, repeated as necessary.
+; Notes:
+; ( 1) Hours greater than 65534 will be coded as 65534.
+; ( 2) The reference time in section 1 and the forecast time together define the beginning of the overall time interval.
+; ( 3) An increment of zero means that the statistical processing is the result of a continuous (or near continuous) process, not the processing of a number of discrete samples. Examples of such continuous processes are the temperatures measured by analogue maximum and minimum thermometers or thermographs, and the rainfall measured by a rain gauge.
+; ( 4) The reference and forecast times are successively set to their initial values plus or minus the increment, as defined by the type of time increment (one of octets 48, 60, 72 ...). For all but the innermost (last) time range, the next inner range is then processed using these reference and forecast times as the initial reference and forecast time.
+
+
+Section 4 - Template 11 : Individual ensemble forecast, control and perturbed, at a horizontal level or in a horizontal layer in a continuous or non-continuous time interval
+; Octets  Key Type    Content
+10  parameterCategory   codetable   Parameter category (see Code table 4.1)
+11  parameterNumber codetable   Parameter number (see Code table 4.2)
+12  typeOfGeneratingProcess codetable   Type of generating process (see Code table 4.3)
+13  backgroundProcess   unsigned    Background generating process identifier (defined by originating centre)
+14  generatingProcessIdentifier unsigned    Forecast generating process identifier (defined by originating centre)
+15-16   hoursAfterDataCutoff    unsigned    Hours after reference time of data cut-off (see Note 1)
+17  minutesAfterDataCutoff  unsigned    Minutes after reference time of data cut-off
+18  indicatorOfUnitOfTimeRange  codetable   Indicator of unit of time range (see Code table 4.4)
+19-22   forecastTime    signed  Forecast time in units defined by octet 18 (see Note 2)
+23  typeOfFirstFixedSurface codetable   Type of first fixed surface (see Code table 4.5)
+24  scaleFactorOfFirstFixedSurface  signed  Scale factor of first fixed surface
+25-28   scaledValueOfFirstFixedSurface  unsigned    Scaled value of first fixed surface
+29  typeOfSecondFixedSurface    codetable   Type of second fixed surface (see Code table 4.5)
+30  scaleFactorOfSecondFixedSurface signed  Scale factor of second fixed surface
+31-34   scaledValueOfSecondFixedSurface unsigned    Scaled value of second fixed surface
+35  typeOfEnsembleForecast  codetable   Type of ensemble forecast (see Code table 4.6)
+36  perturbationNumber  unsigned    Perturbation number
+37  numberOfForecastsInEnsemble unsigned    Number of forecasts in ensemble
+38-39   yearOfEndOfOverallTimeInterval  unsigned    Year of end of overall time interval
+40  monthOfEndOfOverallTimeInterval unsigned    Month of end of overall time interval
+41  dayOfEndOfOverallTimeInterval   unsigned    Day of end of overall time interval
+42  hourOfEndOfOverallTimeInterval  unsigned    Hour of end of overall time interval
+43  minuteOfEndOfOverallTimeInterval    unsigned    Minute of end of overall time interval
+44  secondOfEndOfOverallTimeInterval    unsigned    Second of end of overall time interval
+45  numberOfTimeRange   unsigned    n - number of time range specifications describing the time intervals used to calculate the statistically- processed field
+46-49   numberOfMissingInStatisticalProcess unsigned    Total number of data values missing in statistical process
+50-61   field1 nyi       Specification of the outermost (or only) time range over which statistical processing is done
+50  typeOfStatisticalProcessing codetable   Statistical process used to calculate the processed field from the field at each time increment during the time range (see Code table 4.10)
+51  typeOfTimeIncrement codetable   Type of time increment between successive fields used in the statistical processing (see Code table 4.11)
+52  indicatorOfUnitForTimeRange codetable   Indicator of unit of time for time range over which statistical processing is done (see Code table 4.4)
+53-56   lengthOfTimeRange   unsigned    Length of the time range over which statistical processing is done, in units defined by the previous octet
+57  indicatorOfUnitForTimeIncrement codetable   Indicator of unit of time for the increment between the successive fields used (see Code table 4.4)
+58-61   timeIncrement   unsigned    Time increment between successive fields, in units defined by the previous octet (see Note 3)
+62-nn   field2 nyi        These octets are included only if n>1, where nn = 49 + 12 x n
+62-73   field3 nyi        As octets 50 to 61, next innermost step of processing
+74-nn   field4 nyi        Additional time range specifications, included in accordance with the value of n. Contents as octets 50 to 61, repeated as necessary
+; Notes:
+; ( 1) Hours greater than 65534 will be coded as 65534.
+; ( 2) The reference time in section 1 and the forecast time together define the beginning of the overall time interval.
+; ( 3) An increment of zero means that the statistical processing is the result of a continuous (or near continuous) process, not the processing of a number of discrete samples. Examples of such continuous processes are the temperatures measured by analogue maximum and minimum thermometers or thermographs, and the rainfall measured by a raingauge. The reference and forecast times are successively set to their initial values plus or minus the increment, as defined by the type of time increment (one of octets 51, 63, 75 ...). For all but the innermost (last) time range, the next inner range is then processed using these reference and forecast times as the initial reference and forecast time.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Section 5 Templates
+
+Section 5 - Template 0 : Probability forecasts at a horizontal level or in a horizontal layer at a point in time
+; Octets    Key Type    Content
+12-15   referenceValue  real    Reference value (R) (IEEE 32-bit floating-point value)
+16-17   binaryScaleFactor   signed  Binary scale factor (E)
+18-19   decimalScaleFactor  signed  Decimal scale factor (D)
+20  bitsPerValue    unsigned    Number of bits used for each packed value for simple packing, or for each group reference value for complex packing or spatial differencing
+21  typeOfOriginalFieldValues   codetable   Type of original field values (see Code Table 5.1)
+; ( 1) Negative values of E or D shall be represented according to Regulation 92.1.5.
+
+Section 5 - Template 2 : Grid point data - complex packing
+; Octets    Key Type    Content
+12-15   referenceValue  real    Reference value (R) (IEEE 32-bit floating-point value)
+16-17   binaryScaleFactor   signed  Binary scale factor (E)
+18-19   decimalScaleFactor  signed  Decimal scale factor (D)
+20  bitsPerValue    unsigned    Number of bits used for each packed value for simple packing, or for each group reference value for complex packing or spatial differencing
+21  typeOfOriginalFieldValues   codetable   Type of original field values (see Code Table 5.1)
+22  groupSplittingMethodUsed    codetable   Group splitting method used (see Code Table 5.4)
+23  missingValueManagementUsed  codetable   Missing value management used (see Code Table 5.5)
+24-27   primaryMissingValueSubstitute   unsigned    Primary missing value substitute
+28-31   secondaryMissingValueSubstitute unsigned    Secondary missing value substitute
+32-35   numberOfGroupsOfDataValues  unsigned    NG - Number of groups of data values into which field is split
+36  referenceForGroupWidths unsigned    Reference for group widths (see Note 12)
+37  numberOfBitsUsedForTheGroupWidths   unsigned    Number of bits used for the group widths (after the reference value in octet 36 has been removed)
+38-41   referenceForGroupLengths    unsigned    Reference for group lengths (see Note 13)
+42  lengthIncrementForTheGroupLengths   unsigned    Length increment for the group lengths (see Note 14)
+43-46   trueLengthOfLastGroup   unsigned    True length of last group
+47  numberOfBitsForScaledGroupLengths   unsigned    Number of bits used for the scaled group lengths (after subtraction of the reference value given in octets 38-41 and division by the length increment given in octet 42)
+; Notes:
+; ( 1) Group lengths have no meaning for row by row packing, where groups are coordinate lines (so the Grid Description Section and possibly the Bit-map Section are enough); for consistency associated field width and reference should then be encoded as 0.
+; ( 2) For row by row packing with a bit-map, there should always be as many groups as rows. In case of rows with only missing values, all associated descriptors should be coded as zero.
+; ( 3) Management of widths into a reference and increments, together with management of lengths as scaled incremental values, are intended to save descriptor size (which is an issue as far as compression gains are concerned).
+; ( 4) Management of explicitly missing values is an alternative to bit-map use within Section 6; it is intended to reduce the whole GRIB message size.
+; ( 5) There may be two types of missing value(s), such as to make a distinction between static misses (for instance, due to a land/sea mask) and occasional misses.
+; ( 6) As an extra option, substitute value(s) for missing data may be specified. If not wished (or not applicable), all bits should be set to 1 for relevant substitute value(s).
+; ( 7) If substitute value(s) are specified, type of content should be consistent with original field values (floating-point - and then IEEE 32-bit encoded-, or integer).
+; ( 8) If primary missing values are used, such values are encoded within appropriate group with all bits set to 1 at packed data level.
+; ( 9) If secondary missing values are used, such values are encoded within appropriate group with all bits set to 1, except the last one set to 0, at packed data level.
+; ( 10) A group containing only missing values (of either type) will be encoded as a constant group (null width, no associated data) and the group reference will have all bits set to 1 for primary type, and all bits set to 1, except the last bit set to 0, for secondary type.
+; ( 11) If necessary, group widths and/or field width of group references may be enlarged to avoid ambiguities between missing value indicator(s) and true data.
+; ( 12) The group width is the number of bits used for every value in a group.
+; ( 13) The group length (L) is the number of values in a group.
+; ( 14) The essence of the complex packing method is to subdivide a field of values into NG groups, where the values in each group have similar sizes. In this procedure, it is necessary to retain enough information to recover the group lengths upon decoding. The NG group lengths for any given field can be described by Ln = ref + Kn * len_inc, n = 1,NG, where ref is given by octets 38-41 and len_inc by octet 42. The NG values of K (the scaled group lengths) are stored in the Data Section, each with the number of bits specified by octet 47. Since the last group is a special case which may not be able to be specified by this relationship, the length of the last group is stored in octets 43-46.
+; ( 15) See Data Template 7.2 and associated notes for complementary information.
+
+Section 5 - Template 3 : Grid point data - complex packing and spatial differencing
+; Octets    Key Type    Content
+12-15   referenceValue  real    Reference value (R) (IEEE 32-bit floating-point value)
+16-17   binaryScaleFactor   signed  Binary scale factor (E)
+18-19   decimalScaleFactor  signed  Decimal scale factor (D)
+20  bitsPerValue    unsigned    Number of bits used for each packed value for simple packing, or for each group reference value for complex packing or spatial differencing
+21  typeOfOriginalFieldValues   codetable   Type of original field values (see Code Table 5.1)
+22  groupSplittingMethodUsed    codetable   Group splitting method used (see Code Table 5.4)
+23  missingValueManagementUsed  codetable   Missing value management used (see Code Table 5.5)
+24-27   primaryMissingValueSubstitute   unsigned    Primary missing value substitute
+28-31   secondaryMissingValueSubstitute unsigned    Secondary missing value substitute
+32-35   numberOfGroupsOfDataValues  unsigned    NG - Number of groups of data values into which field is split
+36  referenceForGroupWidths unsigned    Reference for group widths (see Note 12)
+37  numberOfBitsUsedForTheGroupWidths   unsigned    Number of bits used for the group widths (after the reference value in octet 36 has been removed)
+38-41   referenceForGroupLengths    unsigned    Reference for group lengths (see Note 13)
+42  lengthIncrementForTheGroupLengths   unsigned    Length increment for the group lengths (see Note 14)
+43-46   trueLengthOfLastGroup   unsigned    True length of last group
+47  numberOfBitsForScaledGroupLengths   unsigned    Number of bits used for the scaled group lengths (after subtraction of the reference value given in octets 38-41 and division by the length increment given in octet 42)
+48  orderOfSpatialDifferencing  codetable   Order of spatial differencing (see Code Table 5.6)
+49  numberOfOctetsExtraDescriptors  unsigned    Number of octets required in the Data Section to specify extra descriptors needed for spatial differencing (octets 6-ww in Data Template 7.3)
+; Notes:
+; ( 1) Spatial differencing is a pre-processing before group splitting at encoding time. It is intended to reduce the size of sufficiently smooth fields, when combined with a splitting scheme as described in Data Representation Template 5.2. At order 1, an initial field of values f is replaced by a new field of values g, where g1 = f1, g2 = f2 - f1, ..., gn = fn - fn-1. At order 2, the field of values g is itself replaced by a new field of values h, where h1 = f1, h2 = f2, h3 = g3 - g2, ..., hn = gn - gn-1. To keep values positive, the overall minimum of the resulting field (either gmin or hmin) is removed. At decoding time, after bit string unpacking, the original scaled values are recovered by adding the overall minimum and summing up recursively.
+; ( 2) For differencing of order n, the first n values in the array that are not missing are set to zero in the packed array. These dummy values are not used in unpacking.
+; ( 3) See Data Template 7.3 and associated notes for complementary information.
+
+Section 5 - Template 4 : Grid point data - IEEE floating point data
+; Octets    Key Type    Content
+12  precision   codetable   Precision (See Code table 5.7)
+
+Section 5 - Template 40 : Grid point data - JPEG 2000 code stream format
+; Octets    Key Type    Content
+12-15   referenceValue  ieeefloat   Reference value (R) (IEEE 32-bit floating-point value)
+16-17   binaryScaleFactor   signed  Binary scale factor (E)
+18-19   decimalScaleFactor  signed  Decimal scale factor (D)
+20  bitsPerValue    unsigned    Number of bits required to hold the resulting scaled and referenced data values. (i.e. The depth of the grayscale image.) (see Note 2)
+21  typeOfOriginalFieldValues   codetable   Type of original field values (see Code Table 5.1)
+22  typeOfCompressionUsed   typeOfCompressionUsed   Type of Compression used. (see Code Table 5.40)
+23  targetCompressionRatio  targetCompressionRatio  Target compression ratio, M:1 (with respect to the bit-depth specified in octet 20), when octet 22 indicates Lossy Compression. Otherwise, set to missing. (see Note 3)
+; Notes:
+; ( 1) The intent of this template is to scale the grid point data to obtain desired precision, if appropriate, and then subtract out reference value from the scaled field as is done using Data Representation Template 5.0. After this, the resulting grid point field can be treated as a grayscale image and is then encoded into the JPEG 2000 code stream format. To unpack the data field, the JPEG 2000 code stream is decoded back into an image, and the original field is obtained from the image data as described in regulation 92.9.4, Note (4).
+; ( 2) The JPEG 2000 standard specifies that the bit-depth must be in the range of 1 to 38 bits.
+; ( 3) The compression ratio M:1 ( e.g. 20:1 ) specifies that the encoded stream should be less than ((1/M) x depth x number of data points) bits, where depth is specified in octet 20 and number of data points is specified in octets 6-9 of the Data Representation Section.
+; ( 4) The order of the data points should remain as specified in the scanning mode flags (Flag Table 3.4) set in the appropriate Grid Definition Template, even though the JPEG 2000 standard specifies that an image is stored starting at the top left corner. Assuming that the encoding software is expecting the image data in raster order (left to right across rows for each row), users should set the image width to Ni (or Nx) and the height to Nj (or Ny) if bit 3 of the scanning mode flag equals 0 (adjacent points in i (x) order), when encoding the "image". If bit 3 of the scanning mode flags equals 1 (adjacent points in j (y) order), it may be advantageous to set the image width to Nj (or Ny) and the height to Ni (or Nx).
+; ( 5) This template should not be used when the data points are not available on a rectangular grid, such as occurs if some data points are bit-mapped out or if section 3 describes a quasi-regular grid. If it is necessary to use this template on such a grid, the data field can be treated as a one dimensional image where the height is set to 1 and the width is set to the total number of data points specified in octets 6-9.
+; ( 6) Negative values of E or D shall be represented according to Regulation 92.1.5.
+
+Section 5 - Template 41 : Grid point data - Portable Network Graphics (PNG) format
+; Octets    Key Type    Content
+12-15   referenceValue  ieeefloat   Reference value (R) (IEEE 32-bit floating-point value)
+16-17   binaryScaleFactor   signed  Binary scale factor (E)
+18-19   decimalScaleFactor  signed  Decimal scale factor (D)
+20  bitsPerValue    unsigned    Number of bits required to hold the resulting scaled and referenced data values. (i.e. The depth of the image.) (see Note 2)
+21  typeOfOriginalFieldValues   codetable   Type of original field values (see Code Table 5.1)
+; Notes:
+; ( 1) The intent of this template is to scale the grid point data to obtain desired precision, if appropriate, and then subtract out reference value from the scaled field, as is done using Data Representation Template 5.0. After this, the resulting grid point field can be treated as an image and is then encoded into PNG format. To unpack the data field, the PNG stream is decoded back into an image, and the original field is obtained from the image data as described in regulation 92.9.4, Note (4).
+; ( 2) PNG does not support all bit-depths in an image, so it is necessary to define which depths can be used and how they are to be treated. For grayscale images, PNG supports depths of 1, 2, 4, 8 or 16 bits. Red-Green-Blue (RGB) color images can have depths of 8 or 16 bits with an optional alpha sample. Valid values for octet 20 can be: 1, 2, 4, 8, or 16 - treat as grayscale image 24 - treat as RGB color image (each component having 8 bit depth) 32 - treat as RGB w/ alpha sample color image (each component having 8 bit depth)
+; ( 3) The order of the data points should remain as specified in the scanning mode flags (Flag Table 3.4) set in the appropriate Grid Definition Template, even though the PNG standard specifies that an image is stored starting at the top left corner and scans across each row from left to right starting with the top row. Users should set the image width to Ni (or Nx) and the height to Nj (or Ny) if bit 3 of the scanning mode flag equals 0 (adjacent points in i (x) order), when encoding the "image". If bit 3 of the scanning mode flags equals 1 (adjacent points in j (y) order), it may be advantageous to set the image width to Nj (or Ny) and the height to Ni (or Nx).
+; ( 4) This template should not be used when the data points are not available on a rectangular grid, such as occurs if some data points are bit-mapped out or if section 3 describes a quasi-regular grid. If it is necessary to use this template on such a grid, the data field can be treated as a one dimensional image where the height is set to 1 and the width is set to the total number of data points specified in octets 6-9.
+; ( 5) Negative values of E or D shall be represented according to Regulation 92.1.5.
+
+Section 5 - Template 42 : Grid point data - CCSDS recommended lossless compression
+; Octets    Key Type    Content
+
+12-15   referenceValue              ieeefloat   Reference value (R) (IEEE 32-bit floating-point value)
+16-17   binaryScaleFactor           signed  Binary scale factor (E)
+18-19   decimalScaleFactor          signed  Decimal scale factor (D)
+20      bitsPerValue                unsigned    Number of bits required to hold the resulting scaled and referenced data values. (i.e. The depth of the image.) (see Note 2)
+21      typeOfOriginalFieldValues   codetable   Type of original field values (see Code Table 5.1)
+22      compressionOptions          unsigned    CCSDS compression options mask (See Note 3)
+23      blockSize                   unsigned       Block size
+24-25   sampleInterval              unsigned    Reference sample interval
+; Notes:
+; ( 1) The intent of this template is to scale the grid point data to obtain the desired precision, if appropriate, and then subtract the reference value from the scaled field, as is done using data representation template 5.0. After this, the resulting grid point field can be treated as a greyscale image and encoded into the CCSDS recommended standard for lossless data compression code stream format. To unpack the data field, the CCSDS recommended standard for lossless data compression code stream is decoded back into an image, and the original field is obtained from the image data as described in regulation 92.9.4, Note 4
+; ( 2) The Consultative Committee for Space Data Systems (CCSDS) recommended standard for lossless data compression is the standard used by space agencies for the compression of scientific data transmitted from satellites and other space instruments. This is a very fast predictive compression algorithm based on the extended-Rice algorithm. It uses Golomb-Rice codes for entropy coding. The sequence of prediction errors is divided into blocks. Each block is compressed using a two-pass algorithm. In the first pass, the best coding method for the whole block is determined. In the second pass, the output of the marker of the selected coding method is encoded as ancillary information along with prediction errors. The coding methods include:
+; Golomb-Rice codes of a chosen rank
+; Unary code for transformed pairs of prediction errors
+; Fixed-length natural binary code if the block is found to be incompressible
+; Signalling to the decoder empty block if all prediction errors are zeroes
+; ( 3) Library flags governing data type, and storage and processing parameters. For further information, see Rosenhauer, Mathis. "Flags" libaec - Adaptive Entropy Coding library. German Climate Computing Centre (Deutsches Klimarechenzentrum, DKRZ), 12 May 2016. Web. 13 June 2016. Further details
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Section 6 Templates
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Section 7 Templates
+
+Section 7 - Template 0 : Analysis or forecast error at a horizontal level or in a horizontal layer at a point in time
+; Octets    Key Type    Content
+6-nn  data   implementation       Binary data values - binary string, with each (scaled) data value
+
+Section 7 - Template 1 : Matrix values at grid point -simple packing Preliminary Note: This template was not validated at the time of publication and should be used with caution. Please report any use to WMO Secretariat (World Weather Watch - Basic Systems Department) to assist for validation Note: For most templates, details of the packing process are described in regulation 92.9.4
+; Octets    Key Type    Content
+6-nn  data  implementation         Binary data values - binary string, with each (scaled) data value
+; ( 1) Group descriptors mentioned above may not be physically present; if associated field width is 0.
+
+Section 7 - Template 2 : Grid point data - complex packing Note: For most templates, details of the packing process are described in regulation 92.9.4
+; Octets    Key Type    Content
+6-xx  NG_group_reference_values nyi    NG group reference values (XI in the decoding formula), each of which is encoded using the number of bits specified in octet 20 of Data Representation Template 5.0. Bits set to zero shall be appended as necessary to ensure this sequence of numbers ends on an octet boundary.
+[xx+1]-yy  NG_group_widths      nyi    NG group widths, each of which is encoded using the number of bits specified in octet 37 of Data Representation Template 5.2. Bits set to zero shall be appended as necessary to ensure this sequence of numbers ends on an octet boundary.
+[yy+1]-zz  NG_scaled_group_lengths nyi NG scaled group lengths, each of which is encoded using the number of bits specified in octet 47 of Data Representation Template 5.2. Bits set to zero shall be appended as necessary to ensure this sequence of numbers ends on an octet boundary. (see Note 14 of Data Representation Template 5.2)
+[zz+1]-nn  Packed_values        nyi    Packed values (X2 in the decoding formula), where each value is a deviation from its respective group reference value.
+; Notes:
+; ( 1) Group descriptors mentioned above may not be physically present; if associated field width is 0.
+; ( 2) Group lengths have no meaning for row by row packing; for consistency associated field width should then be encoded as 0. So no specific test for row by row case is mandatory at decoding software level to handle encoding/decoding of group descriptors.
+; ( 3) Scaled group lengths, if present, are encoded for each group. But the true last group length (unscaled) should be taken from Data Representation Template.
+; ( 4) For groups with a constant value, associated field width is 0, and no incremental data are physically present.
+
+Section 7 - Template 3 : Grid point data - complex packing and spatial differencing Note: For most templates, details of the packing process are described in regulation 92.9.4
+; Octets    Key Type    Content
+6-ww       values nyi                   First value(s) of original (undifferenced) scaled data values, followed by the overall minimum of the differences. The number of values stored is 1 greater than the order of differentiation, and the field width is described at octet 49 of Data Representation Template 5.3. (see Note 1)
+[ww+1]-xx   NG_group_reference_values nyi        NG group reference values (X1 in the decoding formula), each of which is encoded using the number of bits specified in octet 20 of Data Representation Template 5.0. Bits set to zero shall be appended where necessary to ensure this sequence of numbers ends on an octet boundary.
+[xx+1]-nn   Packed_values        nyi   Same as for Data Representation Template 7.2.
+; Notes:
+; ( 1) Referring to the notation in Note (1) of Data Representation Template 5.3, at order 1, the values stored in octets 6-ww are g1 and gmin. At order 2, the values stored are h1, h2, and hmin.
+; ( 2) Extra descriptors related to spatial differencing are added before the splitting descriptors, to reflect the separation between the 2 approaches. It enables to share software parts between cases with and without spatial differencing.
+; ( 3) The position of overall minimum after initial data values is a choice that enables less software management.
+; ( 4) Overall minimum will be negative in most cases. First bit should indicate the sign: 0 if positive, 1 if negative.
+
+Section 7 - Template 4 : Grid point data - IEEE floating point data
+; Octets    Key Type    Content
+6-nn   data   implementation          Binary data values
+
+Section 7 - Template 40 : Grid point data - JPEG 2000 Code Stream Format Note: For most templates, details of the packing process are described in regulation 92.9.4
+; Octets    Key Type    Content
+6-nn   data   implementation          JPEG 2000 Code Stream as described in Part1 of the JPEG 2000 standard. (ISO/IEC 15444- 1:2000)
+; ( 1) For simplicity, image data should be packed specifying a single component (i.e. grayscale image) instead of a multi- component color image.
+
+Section 7 - Template 41 : Grid point data - Portable Network Graphics (PNG) Format Note: For most templates, details of the packing process are described in regulation 92.9.4
+; Octets    Key Type    Content
+6-nn    data   implementation         PNG encoded image
+; ( 1) If octet 20 of Data Representation Template 5.41 specifies the data is packed into either 1, 2, 4, 8, or 16 bits, then encode the "image" as a grayscale image. If octet 20 specifies 24 bits, encode the "image" as an Red-Green-Blue (RGB) color image with 8 bit depth for each color component, and finally if octet 20 is 32, encode the "image" as a RGB color image with an alpha sample using an 8 bit depth for each of the four components.
+
+Section 7 - Template 50 : Spectral data - simple packing Note: For most templates, details of the packing process are described in regulation 92.9.4
+Octets  Key Type    Content
+6-nn   data   implementation          Binary data values - binary string, with each (scaled) data value
+
+Section 7 - Template 51 : Spherical harmonics - complex packing Note: For most templates, details of the packing process are described in regulation 92.9.4
+; Octets  Key Type    Content
+6-(5+I*TS)   Data_values nyi        Data values from the unpacked subset (IEEE floating-point values on I octets)
+(6+I*TS)-nn  Binary_values nyi      Binary data values - binary string, with each (scaled) data value out of the unpacked subset
+; Notes:
+; ( 1) Values ordering within the unpacked subset is defined according to the source of grid definition associated with the data
+; ( 2) Number of octets associated with each value of the unpacked subset (I) is defined in Code Table 5.7, according to the actual value in octet 35 of Data Representation Template 5.51
+; ( 3) Values ordering within the packed data is done according to the source of grid definition, skipping the values processed in the unpacked subset
+
+;;; EOF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

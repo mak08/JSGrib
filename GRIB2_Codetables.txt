@@ -1,0 +1,738 @@
+==== DISCIPLINE 0 CATEGORY 0    Temperature     ====
+0|Temperature|K|TMP
+1|Virtual Temperature|K|VTMP
+2|Potential Temperature|K|POT
+3|"Pseudo-Adiabatic Potential Temperature (or Equivalent Potential Temperature)"|K|EPOT
+4|Maximum Temperature (see Note 1)|K|TMAX
+5|Minimum Temperature (see Note 1)|K|TMIN
+6|Dew Point Temperature|K|DPT
+7|Dew Point Depression (or Deficit)|K|DEPR
+8|Lapse Rate|K m-1|LAPR
+9|Temperature Anomaly|K|TMPA
+10|Latent Heat Net Flux|W m-2|LHTFL
+11|Sensible Heat Net Flux|W m-2|SHTFL
+12|Heat Index|K|HEATX
+13|Wind Chill Factor|K|WCF
+14|Minimum Dew Point Depression (see Note 1)|K|MINDPD
+15|Virtual Potential Temperature|K|VPTMP
+16|Snow Phase Change Heat Flux|W m-2|SNOHF
+17|Skin Temperature|K|SKINT
+18|Snow Temperature (top of snow)|K|SNOT
+19|Turbulent Transfer Coefficient for Heat|Numeric|TTCHT
+20|Turbulent Diffusion Coefficient for Heat|m2s-1|TDCHT
+21|Apparent Temperature (see Note 2)|K|APTMP
+22|Temperature Tendency due to Short-Wave Radiation|K s-1|TTSWR
+23|Temperature Tendency due to Long-Wave Radiation|K s-1|TTLWR
+24|Temperature Tendency due to Short-Wave Radiation, Clear Sky|K s-1|TTSWRCS
+25|Temperature Tendency due to Long-Wave Radiation, Clear Sky|K s-1|TTLWRCS
+26|Temperature Tendency due to parameterizations|K s-1|TTPARM
+27|Wet Bulb Temperature|K|WETBT
+28|Unbalanced Component of Temperature|K|UCTMP
+29|Temperature Advection|K s-1|TMPADV
+30|Latent Heat Net Flux Due to Evaporation|W m-2|LHFLXE
+31|Latent Heat Net Flux Due to Sublimation|W m-2|LHFLXS
+32|Wet-Bulb Potential Temperature|K|WETBPT
+33-191|Reserved||
+192-254|Reserved for Local Use||
+192|Snow Phase Change Heat Flux|W m-2|SNOHF
+193|Temperature Tendency by All Radiation|K s-1|TTRAD
+194|Relative Error Variance||REV
+195|Large Scale Condensate Heating Rate|K s-1|LRGHR
+196|Deep Convective Heating Rate|K s-1|CNVHR
+197|Total Downward Heat Flux at Surface|W m-2|THFLX
+198|Temperature Tendency by All Physics|K s-1|TTDIA
+199|Temperature Tendency by Non-radiation Physics|K s-1|TTPHY
+200|Standard Dev. of IR Temp. over 1x1 deg. area|K|TSD1D
+201|Shallow Convective Heating Rate|K s-1|SHAHR
+202|Vertical Diffusion Heating rate|K s-1|VDFHR
+203|Potential Temperature at Top of Viscous Sublayer|K|THZ0
+204|Tropical Cyclone Heat Potential|J m-2 K|TCHP
+205|Effective Layer (EL) Temperature|C|ELMELT
+206|Wet Bulb Globe Temperature|K|WETGLBT
+255|Missing||
+; "Notes:
+;  (1) Parameter deprecated. See Regulation 92.6.2 and use another parameter instead.
+;  (2) Apparent temperature is the perceived outdoor temperature, caused by a combination of phenomena, such as air temperature, relative humidity and wind speed."
+
+==== DISCIPLINE 0 CATEGORY 1 Moisture   ====
+0|Specific Humidity|kg kg-1|SPFH
+1|Relative Humidity|%|RH
+2|Humidity Mixing Ratio|kg kg-1|MIXR
+3|Precipitable Water|kg m-2|PWAT
+4|Vapour Pressure|Pa|VAPP
+5|Saturation Deficit|Pa|SATD
+6|Evaporation|kg m-2|EVP
+7|Precipitation Rate (see Note 1)|kg m-2 s-1|PRATE
+8|Total Precipitation (see Note 3)|kg m-2|APCP
+9|Large-Scale Precipitation (non-convective) (see Note 3)|kg m-2|NCPCP
+10|Convective Precipitation (see Note 3)|kg m-2|ACPCP
+11|Snow Depth|m|SNOD
+12|Snowfall Rate Water Equivalent (see Note 1)|kg m-2 s-1|SRWEQ
+13|Water Equivalent of Accumulated Snow Depth (see Note 3)|kg m-2|WEASD
+14|Convective Snow (see Note 3)|kg m-2|SNOC
+15|Large-Scale Snow (see Note 3)|kg m-2|SNOL
+16|Snow Melt (see Note 7)|kg m-2|SNOM
+17|Snow Age|day|SNOAG
+18|Absolute Humidity|kg m-3|ABSH
+19|Precipitation Type|See Table 4.201|PTYPE
+20|Integrated Liquid Water|kg m-2|ILIQW
+21|Condensate|kg kg-1|TCOND
+22|Cloud Mixing Ratio|kg kg-1|CLMR
+23|Ice Water Mixing Ratio|kg kg-1|ICMR
+24|Rain Mixing Ratio|kg kg-1|RWMR
+25|Snow Mixing Ratio|kg kg-1|SNMR
+26|Horizontal Moisture Convergence|kg kg-1 s-1|MCONV
+27|Maximum Relative Humidity (see Note 1)|%|MAXRH
+28|Maximum Absolute Humidity (see Note 1)|kg m-3|MAXAH
+29|Total Snowfall (see Note 3)|m|ASNOW
+30|Precipitable Water Category|See Table 4.202|PWCAT
+31|Hail|m|HAIL
+32|Graupel|kg kg-1|GRLE
+33|Categorical Rain|Code table 4.222|CRAIN
+34|Categorical Freezing Rain|Code table 4.222|CFRZR
+35|Categorical Ice Pellets|Code table 4.222|CICEP
+36|Categorical Snow|Code table 4.222|CSNOW
+37|Convective Precipitation Rate|kg m-2 s-1|CPRAT
+38|Horizontal Moisture Divergence|kg kg-1 s-1|MDIVER
+39|Percent frozen precipitation|%|CPOFP
+40|Potential Evaporation|kg m-2|PEVAP
+41|Potential Evaporation Rate (see Note 4)|W m-2|PEVPR
+42|Snow Cover|%|SNOWC
+43|Rain Fraction of Total Cloud Water|Proportion|FRAIN
+44|Rime Factor|Numeric|RIME
+45|Total Column Integrated Rain|kg m-2|TCOLR
+46|Total Column Integrated Snow|kg m-2|TCOLS
+47|Large Scale Water Precipitation (Non-Convective) (see Note 3)|kg m-2|LSWP
+48|Convective Water Precipitation (see Note 3)|kg m-2|CWP
+49|Total Water Precipitation (see Note 3)|kg m-2|TWATP
+50|Total Snow Precipitation (see Note 3)|kg m-2|TSNOWP
+51|"Total Column Water (Vertically integrated total water (vapour+cloud water/ice)"|kg m-2|TCWAT
+52|Total Precipitation Rate (see Note 2)|kg m-2 s-1|TPRATE
+53|Total Snowfall Rate Water Equivalent (see Note 2)|kg m-2 s-1|TSRWE
+54|Large Scale Precipitation Rate|kg m-2 s-1|LSPRATE
+55|Convective Snowfall Rate Water Equivalent|kg m-2 s-1|CSRWE
+56|Large Scale Snowfall Rate Water Equivalent|kg m-2 s-1|LSSRWE
+57|Total Snowfall Rate|m s-1|TSRATE
+58|Convective Snowfall Rate|m s-1|CSRATE
+59|Large Scale Snowfall Rate|m s-1|LSSRATE
+60|Snow Depth Water Equivalent|kg m-2|SDWE
+61|Snow Density|kg m-3|SDEN
+62|Snow Evaporation (see Note 8)|kg m-2|SEVAP
+63|Reserved||
+64|Total Column Integrated Water Vapour|kg m-2|TCIWV
+65|Rain Precipitation Rate|kg m-2 s-1|RPRATE
+66|Snow Precipitation Rate|kg m-2 s-1|SPRATE
+67|Freezing Rain Precipitation Rate|kg m-2 s-1|FPRATE
+68|Ice Pellets Precipitation Rate|kg m-2 s-1|IPRATE
+69|Total Column Integrate Cloud Water|kg m-2|TCOLW
+70|Total Column Integrate Cloud Ice|kg m-2|TCOLI
+71|Hail Mixing Ratio|kg kg-1|HAILMXR
+72|Total Column Integrate Hail|kg m-2|TCOLH
+73|Hail Prepitation Rate|kg m-2 s-1|HAILPR
+74|Total Column Integrate Graupel|kg m-2|TCOLG
+75|Graupel (Snow Pellets) Prepitation Rate|kg m-2 s-1|GPRATE
+76|Convective Rain Rate|kg m-2 s-1|CRRATE
+77|Large Scale Rain Rate|kg m-2 s-1|LSRRATE
+78|"Total Column Integrate Water (All components including precipitation)"|kg m-2|TCOLWA
+79|Evaporation Rate|kg m-2 s-1|EVARATE
+80|Total Condensate|kg kg-1|TOTCON
+81|Total Column-Integrate Condensate|kg m-2|TCICON
+82|Cloud Ice Mixing Ratio|kg kg-1|CIMIXR
+83|Specific Cloud Liquid Water Content|kg kg-1|SCLLWC
+84|Specific Cloud Ice Water Content|kg kg-1|SCLIWC
+85|Specific Rain Water Content|kg kg-1|SRAINW
+86|Specific Snow Water Content|kg kg-1|SSNOWW
+87|Stratiform Precipitation Rate|kg m-2 s-1|STRPRATE
+88|Categorical Convective Precipitation|Code table 4.222|CATCP
+89|Reserved||
+90|Total Kinematic Moisture Flux|kg kg-1 m s-1|TKMFLX
+91|U-component (zonal) Kinematic Moisture Flux|kg kg-1 m s-1|UKMFLX
+92|V-component (meridional) Kinematic Moisture Flux|kg kg-1 m s-1|VKMFLX
+93|Relative Humidity With Respect to Water|%|RHWATER
+94|Relative Humidity With Respect to Ice|%|RHICE
+95|Freezing or Frozen Precipitation Rate|kg m-2 s-1|FZPRATE
+96|Mass Density of Rain|kg m-3|MASSDR
+97|Mass Density of Snow|kg m-3|MASSDS
+98|Mass Density of Graupel|kg m-3|MASSDG
+99|Mass Density of Hail|kg m-3|MASSDH
+100|Specific Number Concentration of Rain|kg-1|SPNCR
+101|Specific Number Concentration of Snow|kg-1|SPNCS
+102|Specific Number Concentration of Graupel|kg-1|SPNCG
+103|Specific Number Concentration of Hail|kg-1|SPNCH
+104|Number Density of Rain|m-3|NUMDR
+105|Number Density of Snow|m-3|NUMDS
+106|Number Density of Graupel|m-3|NUMDG
+107|Number Density of Hail|m-3|NUMDH
+108|Specific Humidity Tendency due to Parameterizations|kg kg-1 s-1|SHTPRM
+109|Mass Density of Liquid Water Coating on Hail Expressed as Mass of Liquid Water per Unit Volume of Air|kg m-3|MDLWHVA
+110|Specific Mass of Liquid Water Coating on Hail Expressed as Mass of Liquid Water per Unit Mass of Moist Air|kg kg-1|SMLWHMA
+111|Mass Mixing Ratio of Liquid Water Coating on Hail Expressed as Mass of Liquid Water per Unit Mass of Dry Air|kg kg-1|MMLWHDA
+112|Mass Density of Liquid Water Coating on Graupel Expressed as Mass of Liquid Water per Unit Volume of Air|kg m-3|MDLWGVA
+113|Specific Mass of Liquid Water Coating on Graupel Expressed as Mass of Liquid Water per Unit Mass of Moist Air|kg kg-1|SMLWGMA
+114|Mass Mixing Ratio of Liquid Water Coating on Graupel Expressed as Mass of Liquid Water per Unit Mass of Dry Air|kg kg-1|MMLWGDA
+115|Mass Density of Liquid Water Coating on Snow Expressed as Mass of Liquid Water per Unit Volume of Air|kg m-3|MDLWSVA
+116|Specific Mass of Liquid Water Coating on Snow Expressed as Mass of Liquid Water per Unit Mass of Moist Air|kg kg-1|SMLWSMA
+117|Mass Mixing Ratio of Liquid Water Coating on Snow Expressed as Mass of Liquid Water per Unit Mass of Dry Air|kg kg-1|MMLWSDA
+118|Unbalanced Component of Specific Humidity|kg kg-1|UNCSH
+119|Unbalanced Component of Specific Cloud Liquid Water content|kg kg-1|UCSCLW
+120|Unbalanced Component of Specific Cloud Ice Water content|kg kg-1|UCSCIW
+121|Fraction of Snow Cover|Proportion|FSNOWC
+122|Precipitation intensity index|See Table 4.247|PIIDX
+123|Dominant precipitation type|See Table 4.201|DPTYPE
+124|Presence of showers|See Table 4.222|PSHOW
+125|Presence of blowing snow|See Table 4.222|PBSNOW
+126|Presence of blizzard|See Table 4.222|PBLIZZ
+127|Ice pellets (non-water equivalent) precipitation rate|m s-1|ICEP
+128|Total solid precipitation rate (see Note 5)|kg m-2 s-1|TSPRATE
+129|Effective Radius of Cloud Water|m|EFRCWAT
+130|Effective Radius of Rain|m|EFRRAIN
+131|Effective Radius of Cloud Ice|m|EFRCICE
+132|Effective Radius of Snow|m|EFRSNOW
+133|Effective Radius of Graupel|m|EFRGRL
+134|Effective Radius of Hail|m|EFRHAIL
+135|Effective Radius of Subgrid Liquid Clouds|m|EFRSLC
+136|Effective Radius of Subgrid Ice Clouds|m|EFRSICEC
+137|Effective Aspect Ratio of Rain||EFARRAIN
+138|Effective Aspect Ratio of Cloud Ice||EFARCICE
+139|Effective Aspect Ratio of Snow||EFARSNOW
+140|Effective Aspect Ratio of Graupel||EFARGRL
+141|Effective Aspect Ratio of Hail||EFARHAIL
+142|Effective Aspect Ratio of Subgrid Ice Clouds||EFARSIC
+143|Potential evaporation rate|kg m-2 s-1|PERATE
+144|Specific rain water content (convective)|kg kg-1|SRWATERC
+145|Specific snow water content (convective)|kg kg-1|SSNOWWC
+146|Cloud ice precipitation rate (see Note 6)|kg m-2 s-1|CICEPR
+147|Character of precipitation|See Table 4.249|CHPRECIP
+148|Snow evaporation rate (see Note 9)|kg m-2 s-1|SNOWERAT
+149|Cloud water mixing ratio|kg kg-1|CWATERMR
+150|Column integrated eastward water vapour mass flux|kg m-1s-1|CEWVMF
+151|Column integrated northward water vapour mass flux|kg m-1s-1|CNWVMF
+152|Column integrated eastward cloud liquid water mass flux|kg m-1s-1|CECLWMF
+153|Column integrated northward cloud liquid water mass flux|kg m-1s-1|CNCLWMF
+154|Column integrated eastward cloud ice mass flux|kg m-1s-1|CECIMF
+155|Column integrated northward cloud ice mass flux|kg m-1s-1|CNCIMF
+156|Column integrated eastward rain mass flux|kg m-1s-1|CERMF
+157|Column integrated northward rain mass flux|kg m-1s-1|CNRMF
+158|Column integrated eastward snow mass flux|kg m-1s-1|CEFMF
+159|Column integrated northward snow mass flux|kg m-1s-1|CNSMF
+160|Column integrated divergence of water vapour mass flux|kg m-1s-1|CDWFMF
+161|Column integrated divergence of cloud liquid water mass flux|kg m-1s-1|CDCLWMF
+162|Column integrated divergence of cloud ice mass flux|kg m-1s-1|CDCIMF
+163|Column integrated divergence of rain mass flux|kg m-1s-1|CDRMF
+164|Column integrated divergence of snow mass flux|kg m-1s-1|CDSMF
+165|Column integrated divergence of total water mass flux|kg m-1s-1|CDTWMF
+166|Column integrated water vapour flux|kg m-1s-1|CWVF
+167|Total column supercooled liquid water|kg m-2|TCSLW
+168|Saturation specific humidity with respect to water|kg m-3|SSPFHW
+169|Total column integrated saturation specific humidity with respect to water|kg m-2|TCISSPFHW
+170-191|Reserved||
+192-254|Reserved for Local Use||
+192|Categorical Rain|Code table 4.222|CRAIN
+193|Categorical Freezing Rain|Code table 4.222|CFRZR
+194|Categorical Ice Pellets|Code table 4.222|CICEP
+195|Categorical Snow|Code table 4.222|CSNOW
+196|Convective Precipitation Rate|kg m-2 s-1|CPRAT
+197|Horizontal Moisture Divergence|kg kg-1 s-1|MDIV
+198|Minimum Relative Humidity|%|MINRH
+199|Potential Evaporation|kg m-2|PEVAP
+200|Potential Evaporation Rate|W m-2|PEVPR
+201|Snow Cover|%|SNOWC
+202|Rain Fraction of Total Liquid Water|non-dim|FRAIN
+203|Rime Factor|non-dim|RIME
+204|Total Column Integrated Rain|kg m-2|TCOLR
+205|Total Column Integrated Snow|kg m-2|TCOLS
+206|Total Icing Potential Diagnostic|non-dim|TIPD
+207|Number concentration for ice particles|non-dim|NCIP
+208|Snow temperature|K|SNOT
+209|Total column-integrated supercooled liquid water|kg m-2|TCLSW
+210|Total column-integrated melting ice|kg m-2|TCOLM
+211|Evaporation - Precipitation|cm/day|EMNP
+212|Sublimation (evaporation from snow)|W m-2|SBSNO
+213|Deep Convective Moistening Rate|kg kg-1 s-1|CNVMR
+214|Shallow Convective Moistening Rate|kg kg-1 s-1|SHAMR
+215|Vertical Diffusion Moistening Rate|kg kg-1 s-1|VDFMR
+216|"Condensation Pressure of Parcali Lifted From Indicate Surface"|Pa|CONDP
+217|Large scale moistening rate|kg kg-1 s-1|LRGMR
+218|Specific humidity at top of viscous sublayer|kg kg-1|QZ0
+219|Maximum specific humidity at 2m|kg kg-1|QMAX
+220|Minimum specific humidity at 2m|kg kg-1|QMIN
+221|Liquid precipitation (Rainfall)|kg m-2|ARAIN
+222|Snow temperature, depth-avg|K|SNOWT
+223|Total precipitation (nearest grid point)|kg m-2|APCPN
+224|Convective precipitation (nearest grid point)|kg m-2|ACPCPN
+225|Freezing Rain|kg m-2|FRZR
+226|Pblackominant Weather (see Local Use Note A)|Numeric|PWTHER
+227|Frozen Rain|kg m-2|FROZR
+228|Flat Ice Accumulation (FRAM)|kg m-2|FICEAC
+229|Line Ice Accumulation (FRAM)|kg m-2|LICEAC
+230|Sleet Accumulation|kg m-2|SLACC
+231|Precipitation Potential Index|%|PPINDX
+232|Probability Cloud Ice Present|%|PROBCIP
+233|Snow Liquid ratio|kg kg-1|SNOWLR
+234|Precipitation Duration|hour|PCPDUR
+235|Cloud Liquid Mixing Ratio|kg kg-1|CLLMR
+236-240|Reserved||
+241|Total Snow|kg m-2|TSNOW
+242|Relative Humidity with Respect to Precipitable Water|%|RHPW
+245|Hourly Maximum of Column Vertical Integrated Graupel on Entire Atmosphere|kg m-2|MAXVIG
+255|Missing||
+; "Notes:
+;  (1) Parameter deprecated - See Regulation 92.6.2 and use another parameter instead.
+; (2) Total precipitation/snowfall rate stands for the sum of convective and large-scale precipitation/snowfall rate.
+; (3) Statistical process 1 (Accumulation) does not change units. It is recommended to use another parameter with ""rate"" in its name and accumulation in PDT.
+; (4) The listed units for this parameter appear to be inappropriate for the potential evaporation rate. Instead, it is recommended to use parameter 143.
+; (5) Total solid precipitation includes the sum of all types of solid water, e.g. graupel, snow and hail.
+; (6) Assuming a cloud containing a bi-modal ice particle distribution, ""cloud ice"" refers to the small particle mode, whereas the large mode is usually called ""snow"". (""Ice pellets"", in contrast, may refer to the precipitation of sleet, formed from freezing raindrops or refreezing (partially) melted snowflakes, or the precipitation of small hail.)
+; (7) It is recommended to use Snow melt rate instead (discipline 2, category 0, number 41).
+; (8) It is recommended to use parameter 148.
+; (9) Snow evaporation is the accumulated amount of water that has evaporated from snow from within the snow covered area of a grid-box."
+; "Local Use Notes:
+;  (A) The numeric value is a reference to a weather string and key table stored in the Local Use Section (Section 2) of the same GRIB2 message. See MDL Template 2.1 page and this page for more details."
+
+
+==== DISCIPLINE 0 CATEGORY 2 Momentum ====
+0|Wind Direction (from which blowing)|Â°|WDIR
+1|Wind Speed|m s-1|WIND
+2|U-Component of Wind|m s-1|UGRD
+3|V-Component of Wind|m s-1|VGRD
+4|Stream Function|m2 s-1|STRM
+5|Velocity Potential|m2 s-1|VPOT
+6|Montgomery Stream Function|m2 s-2|MNTSF
+7|Sigma Coordinate Vertical Velocity|s-1|SGCVV
+8|Vertical Velocity (Pressure)|Pa s-1|VVEL
+9|Vertical Velocity (Geometric)|m s-1|DZDT
+10|Absolute Vorticity|s-1|ABSV
+11|Absolute Divergence|s-1|ABSD
+12|Relative Vorticity|s-1|RELV
+13|Relative Divergence|s-1|RELD
+14|Potential Vorticity|K m2 kg-1 s-1|PVORT
+15|Vertical U-Component Shear|s-1|VUCSH
+16|Vertical V-Component Shear|s-1|VVCSH
+17|Momentum Flux, U-Component|N m-2|UFLX
+18|Momentum Flux, V-Component|N m-2|VFLX
+19|Wind Mixing Energy|J|WMIXE
+20|Boundary Layer Dissipation|W m-2|BLYDP
+21|Maximum Wind Speed (see Note 1)|m s-1|MAXGUST
+22|Wind Speed (Gust)|m s-1|GUST
+23|U-Component of Wind (Gust)|m s-1|UGUST
+24|V-Component of Wind (Gust)|m s-1|VGUST
+25|Vertical Speed Shear|s-1|VWSH
+26|Horizontal Momentum Flux|N m-2|MFLX
+27|U-Component Storm Motion|m s-1|USTM
+28|V-Component Storm Motion|m s-1|VSTM
+29|Drag Coefficient|Numeric|CD
+30|Frictional Velocity|m s-1|FRICV
+31|Turbulent Diffusion Coefficient for Momentum|m2 s-1|TDCMOM
+32|Eta Coordinate Vertical Velocity|s-1|ETACVV
+33|Wind Fetch|m|WINDF
+34|Normal Wind Component (see Note 2)|m s-1|NWIND
+35|Tangential Wind Component (see Note 2)|m s-1|TWIND
+36|Amplitude Function for Rossby Wave Envelope for Meridional Wind (see Note 3)|m s-1|AFRWE
+37|Northward Turbulent Surface Stress (see Note 4)|N m-2 s|NTSS
+38|Eastward Turbulent Surface Stress (see Note 4)|N m-2 s|ETSS
+39|Eastward Wind Tendency Due to Parameterizations|m s-2|EWTPARM
+40|Northward Wind Tendency Due to Parameterizations|m s-2|NWTPARM
+41|U-Component of Geostrophic Wind|m s-1|UGWIND
+42|V-Component of Geostrophic Wind|m s-1|VGWIND
+43|Geostrophic Wind Direction|Â°|GEOWD
+44|Geostrophic Wind Speed|m s-1|GEOWS
+45|Unbalanced Component of Divergence|s-1|UNDIV
+46|Vorticity Advection|s-2|VORTADV
+47|Surface roughness for heat,(see Note 5)|m|SFRHEAT
+48|Surface roughness for moisture,(see Note 6)|m|SFRMOIST
+49|Wind stress|N m-2|WINDSTR
+50|Eastward wind stress|N m-2|EWINDSTR
+51|Northward wind stress|N m-2|NWINDSTR
+52|u-component of wind stress|N m-2|UWINDSTR
+53|v-component of wind stress|N m-2|VWINDSTR
+54|Natural logarithm of surface roughness length for heat|m|NLSRLH
+55|Natural logarithm of surface roughness length for moisture|m|NLSRLM
+56|u-component of neutral wind|m s-1|UNWIND
+57|v-component of neutral wind|m s-1|VNWIND
+58|Magnitude of turbulent surface stress|N m-2|TSFCSTR
+59|Vertical divergence|s-1|VDIV
+60|Drag thermal coefficient|Numeric|DTC
+61|Drag evaporation coefficient|Numeric|DEC
+62|Eastward turbulent surface stress|N m-2|EASTTSS
+63|Northward turbulent surface stress|N m-2|NRTHTSS
+64|Eastward turbulent surface stress due to orographic form drag|N m-2|EASTTSSOD
+65|Northward turbulent surface stress due to orographic form drag|N m-2|NRTHTSSOD
+66|Eastward turbulent surface stress due to surface roughness|N m-2|EASTTSSSR
+67|Northward turbulent surface stress due to surface roughness|N m-2|NRTHTSSSR
+68-191|Reserved||
+192-254|Reserved for Local Use||
+192|Vertical Speed Shear|s-1|VWSH
+193|Horizontal Momentum Flux|N m-2|MFLX
+194|U-Component Storm Motion|m s-1|USTM
+195|V-Component Storm Motion|m s-1|VSTM
+196|Drag Coefficient|non-dim|CD
+197|Frictional Velocity|m s-1|FRICV
+198|Latitude of U Wind Component of Velocity|deg|LAUV
+199|Longitude of U Wind Component of Velocity|deg|LOUV
+200|Latitude of V Wind Component of Velocity|deg|LAVV
+201|Longitude of V Wind Component of Velocity|deg|LOVV
+202|Latitude of Presure Point|deg|LAPP
+203|Longitude of Presure Point|deg|LOPP
+204|Vertical Eddy Diffusivity Heat exchange|m2 s-1|VEDH
+205|"Covariance between Meridional and Zonal Components of the wind."|m2 s-2|COVMZ
+206|"Covariance between Temperature and Zonal Components of the wind."|K*m s-1|COVTZ
+207|"Covariance between Temperature and Meridional Components of the wind."|K*m s-1|COVTM
+208|Vertical Diffusion Zonal Acceleration|m s-2|VDFUA
+209|Vertical Diffusion Meridional Acceleration|m s-2|VDFVA
+210|Gravity wave drag zonal acceleration|m s-2|GWDU
+211|Gravity wave drag meridional acceleration|m s-2|GWDV
+212|Convective zonal momentum mixing acceleration|m s-2|CNVU
+213|Convective meridional momentum mixing acceleration|m s-2|CNVV
+214|Tendency of vertical velocity|m s-2|WTEND
+215|Omega (Dp/Dt) divide by density|K|OMGALF
+216|Convective Gravity wave drag zonal acceleration|m s-2|CNGWDU
+217|Convective Gravity wave drag meridional acceleration|m s-2|CNGWDV
+218|Velocity Point Model Surface||LMV
+219|Potential Vorticity (Mass-Weighted)|1/s/m|PVMWW
+220|Hourly Maximum of Upward Vertical Velocity|m s-1|MAXUVV
+221|Hourly Maximum of Downward Vertical Velocity|m s-1|MAXDVV
+222|U Component of Hourly Maximum 10m Wind Speed|m s-1|MAXUW
+223|V Component of Hourly Maximum 10m Wind Speed|m s-1|MAXVW
+224|Ventilation Rate|m2 s-1|VRATE
+225|Transport Wind Speed|m s-1|TRWSPD
+226|Transport Wind Direction|Deg|TRWDIR
+227|Earliest Reasonable Arrival Time (10% exceedance)|s|TOA10
+228|Most Likely Arrival Time (50% exceedance)|s|TOA50
+229|Most Likely Departure Time (50% exceedance)|s|TOD50
+230|Latest Reasonable Departure Time (90% exceedance)|s|TOD90
+231|Tropical Wind Direction|Â°|TPWDIR
+232|Tropical Wind Speed|m s-1|TPWSPD
+233|Inflow Based (ESFC) to 50% EL Shear Magnitude|kt|ESHR
+234|U Component Inflow Based to 50% EL Shear Vector|kt|UESH
+235|V Component Inflow Based to 50% EL Shear Vector|kt|VESH
+236|U Component Bunkers Effective Right Motion|kt|UEID
+237|V Component Bunkers Effective Right Motion|kt|VEID
+255|Missing||
+; "Notes:
+; 
+;  (1) Parameter deprecated - See Regulation 92.6.2 and use another parameter instead.
+; 
+;  (2) In relation to local coordinate axes at a cell edge.
+; 
+;  (3)This parameter is described in more detail by (a) Lee, S. and I.M. Held, 1993: Baroclinic wave packets in models and observations. J. Atmos. Sci., 50:1413-1428, (b) Chang, E.K.M., 1993: Downstream development of baroclinic waves as inferred from regression analysis. J. Atmos. Sci., 50:2038-2053, (c) Archambault, H.M., D. Keyser and L.F. Bosart, 2010: Relationships between large-scale regime transitions and major cool-season precipitation events in the northeastern United States. Mon Wea. Review, 138:3454-3473, and(d) Zimin, A.V., I. Szunyogh, B.R. Hung and E. Orr, 2006: Extracting envelopes of non-zonally propagating Rossby wave packets. Mon. Wea. Review, 134:1329-1333.
+; 
+;  (4) Statistical process 1 (Accumulation) does not change units.
+; 
+;  (5) Surface roughness for heat is a measure of the surface resistance to heat transfer.
+; 
+;  (6) Surface roughness for moisture is a measure of the surface resistance to moisture transfer."
+
+==== DISCIPLINE 0 CATEGORY 3 Mass ====
+0|Pressure|Pa|PRES
+1|Pressure Reduced to MSL|Pa|PRMSL
+2|Pressure Tendency|Pa s-1|PTEND
+3|ICAO Standard Atmosphere Reference Height|m|ICAHT
+4|Geopotential|m2 s-2|GP
+5|Geopotential Height|gpm|HGT
+6|Geometric Height|m|DIST
+7|Standard Deviation of Height|m|HSTDV
+8|Pressure Anomaly|Pa|PRESA
+9|Geopotential Height Anomaly|gpm|GPA
+10|Density|kg m-3|DEN
+11|Altimeter Setting|Pa|ALTS
+12|Thickness|m|THICK
+13|Pressure Altitude|m|PRESALT
+14|Density Altitude|m|DENALT
+15|5-Wave Geopotential Height|gpm|5WAVH
+16|Zonal Flux of Gravity Wave Stress|N m-2|U-GWD
+17|Meridional Flux of Gravity Wave Stress|N m-2|V-GWD
+18|Planetary Boundary Layer Height|m|HPBL
+19|5-Wave Geopotential Height Anomaly|gpm|5WAVA
+20|Standard Deviation of Sub-Grid Scale Orography|m|SDSGSO
+21|Angle of Sub-Grid Scale Orography|rad|AOSGSO
+22|Slope of Sub-Grid Scale Orography|Numeric|SSGSO
+23|Gravity Wave Dissipation|W m-2|GWD
+24|Anisotropy of Sub-Grid Scale Orography|Numeric|ASGSO
+25|Natural Logarithm of Pressure in Pa|Numeric|NLPRES
+26|Exner Pressure|Numeric|EXPRES
+27|Updraught Mass Flux|kg m-2 s-1|UMFLX
+28|Downdraught Mass Flux|kg m-2 s-1|DMFLX
+29|Updraught Detrainment Rate|kg m-3 s-1|UDRATE
+30|Downdraught Detrainment Rate|kg m-3 s-1|DDRATE
+31|Unbalanced Component of Logarithm of Surface Pressure|-|UCLSPRS
+32|Saturation water vapour pressure|Pa|SWATERVP
+33|Geometric altitude above mean sea level|m|GAMSL
+34|Geometric height above ground level|m|GHAGRD
+35|Column integrated divergence of total mass flux|kg m-2 s-1|CDTMF
+36|Column integrated eastward total mass flux|kg m-2 s-1|CETMF
+37|Column integrated northward total mass flux|kg m-2 s-1|CNTMF
+38|Standard deviation of filtered subgrid orography|m|SDFSO
+39|Column integrated mass of atmosphere|kg m-2 s-1|CMATMOS
+40|Column integrated eastward geopotential flux|W m-1|CEGFLUX
+41|Column integrated northward geopotential flux|W m-1|CNGFLUX
+42|Column integrated divergence of water geopotential flux|W m-2|CDWGFLUX
+43|Column integrated divergence of geopotential flux|W m-2|CDGFLUX
+44|Height of zero-degree wet-bulb temperature|m|HWBT
+45|Height of one-degree wet-bulb temperature|m|WOBT
+46|Pressure departure from hydrostatic state|Pa|PRESDHS
+47-191|Reserved||
+192-254|Reserved for Local Use||
+192|MSLP (Eta model reduction)|Pa|MSLET
+193|5-Wave Geopotential Height|gpm|5WAVH
+194|Zonal Flux of Gravity Wave Stress|N m-2|U-GWD
+195|Meridional Flux of Gravity Wave Stress|N m-2|V-GWD
+196|Planetary Boundary Layer Height|m|HPBL
+197|5-Wave Geopotential Height Anomaly|gpm|5WAVA
+198|MSLP (MAPS System Reduction)|Pa|MSLMA
+199|3-hr pressure tendency (Std. Atmos. Reduction)|Pa s-1|TSLSA
+200|Pressure of level from which parcel was lifted|Pa|PLPL
+201|X-gradient of Log Pressure|m-1|LPSX
+202|Y-gradient of Log Pressure|m-1|LPSY
+203|X-gradient of Height|m-1|HGTX
+204|Y-gradient of Height|m-1|HGTY
+205|Layer Thickness|m|LAYTH
+206|Natural Log of Surface Pressure|ln (kPa)|NLGSP
+207|Convective updraft mass flux|kg m-2 s-1|CNVUMF
+208|Convective downdraft mass flux|kg m-2 s-1|CNVDMF
+209|Convective detrainment mass flux|kg m-2 s-1|CNVDEMF
+210|Mass Point Model Surface||LMH
+211|Geopotential Height (nearest grid point)|gpm|HGTN
+212|Pressure (nearest grid point)|Pa|PRESN
+213|Orographic Convexity||ORCONV
+214|Orographic Asymmetry, W Component||ORASW
+215|Orographic Asymmetry, S Component||ORASS
+216|Orographic Asymmetry, SW Component||ORASSW
+217|Orographic Asymmetry, NW Component||ORASNW
+218|Orographic Length Scale, W Component||ORLSW
+219|Orographic Length Scale, S Component||ORLSS
+220|Orographic Length Scale, SW Component||ORLSSW
+221|Orographic Length Scale, NW Component||ORLSNW
+222|Effective Surface Height|m|EFSH
+255|Missing||
+
+==== DISCIPLINE 0 CATEGORY 6 Cloud ====
+0|Cloud Ice|kg m-2|CICE
+1|Total Cloud Cover|%|TCDC
+2|Convective Cloud Cover|%|CDCON
+3|Low Cloud Cover|%|LCDC
+4|Medium Cloud Cover|%|MCDC
+5|High Cloud Cover|%|HCDC
+6|Cloud Water|kg m-2|CWAT
+7|Cloud Amount|%|CDCA
+8|Cloud Type|See Table 4.203|CDCT
+9|Thunderstorm Maximum Tops|m|TMAXT
+10|Thunderstorm Coverage|See Table 4.204|THUNC
+11|Cloud Base|m|CDCB
+12|Cloud Top|m|CDCTOP
+13|Ceiling|m|CEIL
+14|Non-Convective Cloud Cover|%|CDLYR
+15|Cloud Work Function|J kg-1|CWORK
+16|Convective Cloud Efficiency|Proportion|CUEFI
+17|Total Condensate * - Parameter deprecated|kg kg-1|TCONDO
+18|Total Column-Integrated Cloud Water * - Parameter deprecated|kg m-2|TCOLWO
+19|Total Column-Integrated Cloud Ice * - Parameter deprecated|kg m-2|TCOLIO
+20|Total Column-Integrated Condensate * - Parameter deprecated|kg m-2|TCOLC
+21|Ice fraction of total condensate|Proportion|FICE
+22|Cloud Cover|%|CDCC
+23|Cloud Ice Mixing Ratio * - Parameter deprecated|kg kg-1|CDCIMR
+24|Sunshine|Numeric|SUNS
+25|Horizontal Extent of Cumulonimbus (CB)|%|CBHE
+26|Height of Convective Cloud Base|m|HCONCB
+27|Height of Convective Cloud Top|m|HCONCT
+28|Number Concentration of Cloud Droplets|kg-1|NCONCD
+29|Number Concentration of Cloud Ice|kg-1|NCCICE
+30|Number Density of Cloud Droplets|m-3|NDENCD
+31|Number Density of Cloud Ice|m-3|NDCICE
+32|Fraction of Cloud Cover|Numeric|FRACCC
+33|Sunshine Duration|s|SUNSD
+34|Surface Long Wave Effective Total Cloudiness|Numeric|SLWTC
+35|Surface Short Wave Effective Total Cloudiness|Numeric|SSWTC
+36|Fraction of Stratiform Precipitation Cover|Proportion|FSTRPC
+37|Fraction of Convective Precipitation Cover|Proportion|FCONPC
+38|Mass Density of Cloud Droplets|kg m-3|MASSDCD
+39|Mass Density of Cloud Ice|kg m-3|MASSDCI
+40|Mass Density of Convective Cloud Water Droplets|kg m-3|MDCCWD
+41-46|Reserved||
+47|Volume Fraction of Cloud Water Droplets (see Note 2)|Numeric|VFRCWD
+48|Volume Fraction of Cloud Ice Particles (see Note 2)|Numeric|VFRCICE
+49|Volume Fraction of Cloud (Ice and/or Water) (see Note 2)|Numeric|VFRCIW
+50|Fog (see Note 3)|%|FOG
+51|Sunshine Duration Fraction (see Note 4)|Proportion|SUNFRAC
+52-191|Reserved||
+192-254|Reserved for Local Use||
+192|Non-Convective Cloud Cover|%|CDLYR
+193|Cloud Work Function|J kg-1|CWORK
+194|Convective Cloud Efficiency|non-dim|CUEFI
+195|Total Condensate|kg kg-1|TCOND
+196|Total Column-Integrated Cloud Water|kg m-2|TCOLW
+197|Total Column-Integrated Cloud Ice|kg m-2|TCOLI
+198|Total Column-Integrated Condensate|kg m-2|TCOLC
+199|Ice fraction of total condensate|non-dim|FICE
+200|Convective Cloud Mass Flux|Pa s-1|MFLUX
+201|Sunshine Duration|s|SUNSD
+255|Missing||
+; "Notes:
+;  
+;  * Parameter deprecated - Use another parameter in parameter category 1:moisture instead.
+; 
+;  (2) The sum of the water and ice fractions may exceed the total due to overlap between the volumes containing ice and those containing liquid water.
+;  (3) Fog is defined as cloud cover in the lowest model level.
+;  (4) This parameter is the amount of sunshine in seconds over a given length of time in seconds. Sunshine is defined as a radiation intensity above 120 W m-2."
+
+
+==== DISCIPLINE 10 CATEGRORY 0 Waves        ====
+0|Wave Spectra (1)|-|WVSP1
+1|Wave Spectra (2)|-|WVSP2
+2|Wave Spectra (3)|-|WVSP3
+3|Significant Height of Combined Wind Waves and Swell|m|HTSGW
+4|Direction of Wind Waves|degree true|WVDIR
+5|Significant Height of Wind Waves|m|WVHGT
+6|Mean Period of Wind Waves|s|WVPER
+7|Direction of Swell Waves|degree true|SWDIR
+8|Significant Height of Swell Waves|m|SWELL
+9|Mean Period of Swell Waves|s|SWPER
+10|Primary Wave Direction|degree true|DIRPW
+11|Primary Wave Mean Period|s|PERPW
+12|Secondary Wave Direction|degree true|DIRSW
+13|Secondary Wave Mean Period|s|PERSW
+14|Direction of Combined Wind Waves and Swell|degree true|WWSDIR
+15|Mean Period of Combined Wind Waves and Swell|s|MWSPER
+16|Coefficient of Drag With Waves|-|CDWW
+17|Friction Velocity|m s-1|FRICVW
+18|Wave Stress|N m-2|WSTR
+19|Normalised Waves Stress|-|NWSTR
+20|Mean Square Slope of Waves|-|MSSW
+21|U-component Surface Stokes Drift|m s-1|USSD
+22|V-component Surface Stokes Drift|m s-1|VSSD
+23|Period of Maximum Individual Wave Height|s|PMAXWH
+24|Maximum Individual Wave Height|m|MAXWH
+25|Inverse Mean Wave Frequency|s|IMWF
+26|Inverse Mean Frequency of The Wind Waves|s|IMFWW
+27|Inverse Mean Frequency of The Total Swell|s|IMFTSW
+28|Mean Zero-Crossing Wave Period|s|MZWPER
+29|Mean Zero-Crossing Period of The Wind Waves|s|MZPWW
+30|Mean Zero-Crossing Period of The Total Swell|s|MZPTSW
+31|Wave Directional Width|-|WDIRW
+32|Directional Width of The Wind Waves|-|DIRWWW
+33|Directional Width of The Total Swell|-|DIRWTS
+34|Peak Wave Period|s|PWPER
+35|Peak Period of The Wind Waves|s|PPERWW
+36|Peak Period of The Total Swell|s|PPERTS
+37|Altimeter Wave Height|m|ALTWH
+38|Altimeter Corrected Wave Height|m|ALCWH
+39|Altimeter Range Relative Correction|-|ALRRC
+40|10 Metre Neutral Wind Speed Over Waves|m s-1|MNWSOW
+41|10 Metre Wind Direction Over Waves|degree true|MWDIRW
+42|Wave Engery Spectrum|m-2 s rad-1|WESP
+43|Kurtosis of The Sea Surface Elevation Due to Waves|-|KSSEW
+44|Benjamin-Feir Index|-|BENINX
+45|Spectral Peakedness Factor|s-1|SPFTR
+46|Peak wave direction|Â°|PWAVEDIR
+47|Significant wave height of first swell partition|m|SWHFSWEL
+48|Significant wave height of second swell partition|m|SWHSSWEL
+49|Significant wave height of third swell partition|m|SWHTSWEL
+50|Mean wave period of first swell partition|s|MWPFSWEL
+51|Mean wave period of second swell partition|s|MWPSSWEL
+52|Mean wave period of third swell partition|s|MWPTSWEL
+53|Mean wave direction of first swell partition|Â°|MWDFSWEL
+54|Mean wave direction of second swell partition|Â°|MWDSSWEL
+55|Mean wave direction of third swell partition|Â°|MWDTSWEL
+56|Wave directional width of first swell partition|-|WDWFSWEL
+57|Wave directional width of second swell partition|-|WDWSSWEL
+58|Wave directional width of third swell partition|-|WDWTSWEL
+59|Wave frequency width of first swell partition|-|WFWFSWEL
+60|Wave frequency width of second swell partition|-|WFWSSWEL
+61|Wave frequency width of third swell partition|-|WFWTSWEL
+62|Wave frequency width|-|WAVEFREW
+63|Frequency width of wind waves|-|FREWWW
+64|Frequency width of total swell|-|FREWTSW
+65|Peak Wave Period of First Swell Partition|s|PWPFSPAR
+66|Peak Wave Period of Second Swell Partition|s|PWPSSPAR
+67|Peak Wave Period of Third Swell Partition|s|PWPTSPAR
+68|Peak Wave Direction of First Swell Partition|degree true|PWDFSPAR
+69|Peak Wave Direction of Second Swell Partition|degree true|PWDSSPAR
+70|Peak Wave Direction of Third Swell Partition|degree true|PWDTSPAR
+71|Peak Direction of Wind Waves|degree true|PDWWAVE
+72|Peak Direction of Total Swell|degree true|PDTSWELL
+73|Whitecap Fraction|fraction|WCAPFRAC
+74|Mean Direction of Total Swell|degree|MDTSWEL
+75|Mean Direction of Wind Waves|degree|MDWWAVE
+76|Charnock (see Note 2)|Numeric|CHNCK
+77|Wave Spectral Skewness|Numeric|WAVESPSK
+78|Wave Energy Flux Magnitude|W m-1|WAVEFMAG
+79|Wave Energy Flux Mean Direction|degree true|WAVEFDIR
+80|Raio of Wave Angular and Frequency width|Numeric|RWAVEAFW
+81|Free Convective Velocity over the Oceans|m s-1|FCVOCEAN
+82|Air Density over the Oceans|kg m-3|AIRDENOC
+83|Normalized Energy Flux into Waves (see Note 3)|Numeric|NEFW
+84|Normalized Stress into Ocean (see Note 3)|Numeric|NSOCEAN
+85|Normalized Energy Flux into Ocean (see Note 3)|Numeric|NEFOCEAN
+86|Surface Elevation Variance due to Waves (over all frequencies and directions)|m2 s rad-1|SEVWAVE
+87|Wave Induced Mean Se Level Correction|m|WAVEMSLC
+88|Spectral Width Index|Numeric|SPECWI
+89|Number of Events in Freak Wave Statistics|Numeric|EFWS
+90|U-Component of Surface Momentum Flux into Ocean|N m-2|USMFO
+91|U-Component of Surface Momentum Flux into Ocean|N m-2|VSMFO
+92|Wave Turbulent Energy Flux into Ocean|W m-2|WAVETEFO
+93|Envelop maximum individual wave height|m|EMIWAVE
+94|Time domain maximum individual crest height|m|TDMCREST
+95|Time domain maximum individual wave height|m|TDMWAVE
+96|Space time maximum individual crest height|m|STMCREST
+97|Space time maximum individual wave height|m|STMWAVE
+98-191|Reserved||
+192-254|Reserved for Local Use||
+192|Wave Steepness|proportion|WSTP
+193|Wave Length||WLENG
+255|Missing||
+; "Notes:
+; * Further information concerning the wave parameters can be found in the Guide to Wave Analysis and Forecasting (WMO-No. 702).
+; (2) The Charnock parameter accounts for increased aerodynamic roughness as wave heights grow due to increasing surface stress. It depends on the wind speed, wave age and other aspects of the sea state and is used to calculate how much the waves slow down the wind.
+; (3) Parameters are normalised by being divided by the product of air density and the square of the friction velocity."
+
+==== DISCIPLINE 10 CATEGRORY 1 Currents     ====
+0|Current Direction|degree True|DIRC
+1|Current Speed|m s-1|SPC
+2|U-Component of Current|m s-1|UOGRD
+3|V-Component of Current|m s-1|VOGRD
+4|Rip Current Occurrence Probability|%|RIPCOP
+5|Eastward Current|m s-1|EASTCUR
+6|Northward Current|m s-1|NRTHCUR
+7-191|Reserved||
+192-254|Reserved for Local Use||
+192|Ocean Mixed Layer U Velocity|m s-1|OMLU
+193|Ocean Mixed Layer V Velocity|m s-1|OMLV
+194|Barotropic U velocity|m s-1|UBARO
+195|Barotropic V velocity|m s-1|VBARO
+255|Missing||
+
+==== DISCIPLINE 10 CATEGRORY 2 Ice          ====
+0|Ice Cover|Proportion|ICEC
+1|Ice Thickness|m|ICETK
+2|Direction of Ice Drift|degree True|DICED
+3|Speed of Ice Drift|m s-1|SICED
+4|U-Component of Ice Drift|m s-1|UICE
+5|V-Component of Ice Drift|m s-1|VICE
+6|Ice Growth Rate|m s-1|ICEG
+7|Ice Divergence|s-1|ICED
+8|Ice Temperature|K|ICETMP
+9|Module of Ice Internal Pressure|Pa m|ICEPRS
+10|Zonal Vector Component of Vertically Integrated Ice Internal Pressure|Pa m|ZVCICEP
+11|Meridional Vector Component of Vertically Integrated Ice Internal Pressure|Pa m|MVCICEP
+12|Compressive Ice Strength|N m-1|CICES
+13|Snow Temperature (over sea ice)|K|SNOWTSI
+14|Albedo|Numeric|ALBDOICE
+15|Sea Ice Volume per Unit Area|m3m-2|SICEVOL
+16|Snow Volume Over Sea Ice per Unit Area|m3m-2|SNVOLSI
+17|Sea Ice Heat Content|J m-2|SICEHC
+18|Snow over Sea Ice Heat Content|J m-2|SNCEHC
+19|Ice Freeboard Thickness|m|ICEFTHCK
+20|Ice Melt Pond Fraction|fraction|ICEMPF
+21|Ice Melt Pond Depth|m|ICEMPD
+22|Ice Melt Pond Volume per Unit Area|m3m-2|ICEMPV
+23|Sea Ice Fraction Tendency due to Parameterization|s-1|SIFTP
+24|x-component of ice drift|m s-1|XICE
+25|y-component of ice drift|m s-1|YICE
+26|Reserved||
+27|Freezing/melting potential (Tentatively accepted)|W m-2|FRZMLTPOT
+28|Melt onset date (Tentatively accepted)|Numeric|MLTDATE
+29|Freeze onset date (Tentatively accepted)|Numeric|FRZDATE
+30-191|Reserved||
+192-254|Reserved for Local Use||
+255|Missing||
+; "Notes:
+;  * Ice internal pressure or stress (Pa m) is the integrated pressure across the vertical thickness of a layer of ice. It is produced when concentrated ice reacts to external forces such as wind and ocen currents."

@@ -1,0 +1,98 @@
+; https://codes.ecmwf.int/grib/format/grib2/overview/
+;
+; Octets Key Type Content
+
+Section 0: INDICATOR SECTION
+1-4     identifier ascii "GRIB" (coded according to the International Alphabet No. 5.)
+5-6     reserved unsigned Reserved
+7       discipline codetable Discipline - GRIB Master Table Number (see Code Table 0.0)
+8       editionNumber unsigned GRIB Edition Number (currently 2)
+9-16    totalLength unsigned Total length of GRIB message in octets (including Section 0)
+
+Section 1: IDENTIFICATION SECTION
+1-4     section1Length unsigned Length of section in octets (21 or nn)
+5       numberOfSection unsigned Number of section (1)
+6-7     centre codetable Identification of originating/generating centre (see Common Code Table C-11)
+8-9     subCentre unsigned Identification of originating/generating sub-centre (allocated by originating/generating Centre)
+10      tablesVersion codetable GRIB Master Tables Version Number (see Code Table 1.0 and Note 1)
+11      localTablesVersion codetable Version number of GRIB Local Tables used to augment Master Tables (see Code Table 1.1 and Note 2)
+12      significanceOfReferenceTime codetable Significance of Reference Time (see Code Table 1.2)
+13-14   year unsigned Year (4 digits) |
+15      month unsigned Month |
+16      day unsigned Day | Reference time of data
+17      hour unsigned Hour |
+18      minute unsigned Minute |
+19      second unsigned Second |
+20      productionStatusOfProcessedData codetable Production status of processed data in this GRIB message (see Code Table 1.3)
+21      typeOfProcessedData codetable Type of processed data in this GRIB message (see Code Table 1.4)
+22-23   identificationTemplateNumber unsigned Identification template number (optional, see Code table 1.5)
+24-nn   identificationTemplateNumber template Identification template (optional, see template 1.X, where X is the identification template number given in octets 22-23)
+; Notes:
+; ( 1) Local tables shall define those parts of the master tables which are reserved for local use except for the case described below. In any cases, the use of local tables in messages intended for non-local or international exchange is strongly discouraged.
+; ( 2) If octet 10 contains 255 then only local tables are in use, the local tables version number (Octet 11) must not be zero nor missing, and local tables may include entries from the entire range of the tables.
+; ( 3) If Octet 11 is zero, Octet 10 must contain a valid master tables version number and only those parts of the tables not reserved for local use may be used.
+
+Section 2: LOCAL USE SECTION
+1-4     section2Length unsigned Length of section in octets (nn)
+5       numberOfSection unsigned Number of section (2)
+6-nn    Local use
+
+Section 3: GRID DEFINITION SECTION
+1-4     section3Length unsigned Length of section in octets (nn)
+5       numberOfSection unsigned Number of section (3)
+6       sourceOfGridDefinition codetable Source of grid definition (see Code Table 3.0 and Note 1)
+7-10    numberOfDataPoints unsigned Number of data points
+11      numberOfOctectsForNumberOfPoints unsigned Number of octets for optional list of numbers (see Note 2)
+12      interpretationOfNumberOfPoints codetable Interpretation of list of numbers (see Code Table 3.11)
+13-14   gridDefinitionTemplateNumber codetable Grid Definition Template Number (= N) (see Code Table 3.1)
+15-xx   gridDefinitionTemplateNumber template Grid Definition Template (see Template 3.N, where N is the Grid Definition Template Number given in octets 13-14)
+[xx+1]-nn       numbers unsigned Optional list of numbers defining number of points (see Notes 2, 3 and 4)
+; Notes:
+; ( 1) If octet 6 is not zero, octets 15-xx (15-nn if octet 11 is zero) may not be supplied. This should be documented with all bits set to 1 (missing value) in Grid Definition Template Number.
+; ( 2) An optional list of numbers may be used to document a quasi-regular grid In such a case, octet 11 is non zero, and gives the number of octets used per item in the list. For all other cases, such as regular grids, octets 11 and 12 are zero and no list is appended to the Grid Definition Template.
+; ( 3) If a list of numbers defining number of points is present, it is appended at the end of Grid Definition Template (or directly after Grid Definition Template Number if template is missing), the length of the list is given by the grid definition. When the Grid Definition Template is present, the length is given according to bit 3 of scanning mode flag octet (length is Nj or Ny for flag value 0). List ordering is implied by data scanning.
+; ( 4) Depending on code value given in octet 12, the list of numbers either:
+; - corresponds to the coordinate lines as given in the grid definition, or
+; - corresponds to a full circle, or
+; - does not apply
+
+Section 4: PRODUCT DEFINITION SECTION
+1-4     section4Length  unsigned    Length of section in octets (nn)
+5       numberOfSection unsigned    Number of section (4)
+6-7     NV  unsigned    Number of coordinate values after template or number of information according to 3D vertical coordinate GRIB2 message
+8-9     productDefinitionTemplateNumber codetable   Product Definition Template Number (see Code Table 4.0)
+10-xx   productDefinitionTemplateNumber template Product Definition Template (see Template 4.X, where X is the Product Definition Template Number given in octets 8-9)
+[xx+1]-nn   pv  ieeefloat   Optional list of coordinate values or vertical grid information
+; Notes:
+; ( 1) Coordinates values are intended to document the vertical discretisation associated with model data on hybrid coordinate vertical levels. A number of zero in octets 6-7 indicates that no such values are present. Otherwise the number corresponds to the whole set of values.
+; ( 2) Hybrid systems, in the context, employ a means of representing vertical coordinates in terms of a mathematical combination of pressure and sigma coordinates. When used in conjunction with a surface pressure field and an appropriate mathematical expression, the vertical coordinate parameters may be used to interpret the hybrid vertical coordinate.
+; ( 3) Hybrid coordinate values, if present, should be encoded in IEEE 32-bit floating point format. They are intended to be encoded as pairs.
+; ( 4) Two distinct pressure-based hybrid coordinate formulations can be expressed in GRIB Edition 2. If the hybrid coordinate being used is based on pressure, then level type 105 (Code table 4.5) shall be used to specify the vertical level type. If the formulation is based on the natural logarithm of pressure then level type 113 (Code table 4.5) shall be used. In both cases Notes 1 to 3 (above) apply fully.
+; ( 5) In the case of a generalized vertical height coordinate (fixed surface type 150), no pairs of coordinate values follow after the template, but six sets of additional information (each 4 octets long and encoded in IEEE 32-bit floating point format) follow, starting with the number of vertical levels and the identification number of the used vertical system in the additional GRIB2 message with the 3D vertical system. This identification number together with an UUID (Universally Unique IDentifier) in four parts allows a unique identification of the grid.
+; [xx+1] - [xx+4] Number of vertical levels
+; [xx+5] - [xx+8] Identification number of 3D vertical grid GRIB2 message
+; [xx+9] - [xx+12] UUID part 1 of 4
+; [xx+13] - [xx+16] UUID part 2 of 4
+; [xx+17] - [xx+20] UUID part 3 of 4
+; [xx+21] - [xx+24] UUID part 4 of 4
+
+Section 5: DATA REPRESENTATION SECTION
+1-4     section5Length  unsigned    Length of section in octets (nn)
+5       numberOfSection unsigned    Number of section (5)
+6-9     numberOfValues  unsigned    Number of data points where one or more values are specified in Section 7 when a bit map is present, total number of data points when a bit map is absent.
+10-11   dataRepresentationTemplateNumber    codetable   Data Representation Template Number (see Code Table 5.0)
+12-nn   dataRepresentationTemplateNumber template Data Representation Template (see Template 5.x, where x is the Data Representation Template Number given in octets 10-11)
+
+Section 6: BIT-MAP SECTION
+1-4     section6Length  unsigned    Length of section in octets (nn)
+5       numberOfSection unsigned    Number of section (6)
+6       bitMapIndicator codetable   Bit-map indicator (see Code Table 6.0 and Note 1)
+7-nn    bitmap          bitmap      Bit-map - Contiguous bits with a bit to data point correspondence, ordered as defined in Section 3. A bit set equal to 1 implies the presence of a data value at the corresponding data point, whereas a value of 0 implies the absence of such a value.
+
+Section 7: DATA SECTION
+1-4     section7Length  unsigned    Length of section in octets (nn)
+5       numberOfSection unsigned    Number of section (7)
+6-nn    data            unsigned    Data in a format described by Data Template 7.x, where x is the Data Representation Template number given in octets 10-11 of Section 5.
+
+Section 8: END SECTION
+1-4     endMarker    ascii   "7777" (coded according to the International Alphabet No. 5.)

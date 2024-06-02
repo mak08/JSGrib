@@ -1,5 +1,6 @@
 {
-  "name": "ieee754",
+	"name": "ieee754",
+	"type": "module",
   "description": "Read/write IEEE754 floating point numbers from/to a Buffer or array-like object",
   "version": "1.2.1",
   "author": {

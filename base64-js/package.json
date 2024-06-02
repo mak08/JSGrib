@@ -1,5 +1,6 @@
 {
-  "name": "base64-js",
+	"name": "base64-js",
+	"type": "module",
   "description": "Base64 encoding/decoding in pure JS",
   "version": "1.5.1",
   "author": "T. Jameson Little <t.jameson.little@gmail.com>",
