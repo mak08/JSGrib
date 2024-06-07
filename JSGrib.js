@@ -1,46 +1,49 @@
-import * as fs from 'fs';
-import {GRIB2_SECTIONS} from './GRIB2_Sections.js';
+import {GRIB2_SECTIONS, GRIB2_CODETABLES} from './GRIB2_Sections.js';
 import {JpxImage} from './jpeg2000/src/jpx.js'
+import {Buffer} from './buffer/index.js'
 
 
 const decodeJPXImage = function (rawData) {
     try {
         let t0 = new Date();
-        let buffer = Buffer.from(rawData, 'hex');
-        const jpx = new JpxImage()
-        jpx.parse(buffer);
+        const JPX = new JpxImage()
+        JPX.parse(rawData);
         let t1 = new Date()
-        console.assert(jpx.tiles.length == 1, 'Unexpected number of tiles %d, wanted exactly one.',jpx.tiles.length);
-        console.log('Decoded JPEG2000 width:%d height:%d values:%d in %dms', jpx.width, jpx.height, jpx.tiles[0].items.length, t1 - t0);
-        return jpx.tiles[0].items;
+        console.assert(JPX.tiles.length == 1, 'Unexpected number of tiles %d, wanted exactly one.',JPX.tiles.length);
+        console.log('Decoded JPEG2000 width:%d height:%d values:%d in %dms', JPX.width, JPX.height, JPX.tiles[0].items.length, t1 - t0);
+        return JPX.tiles[0].items;
     } catch (e) {
         console.log(e);
+    }
+}
+
+
+class Message {
+    parameterName() {
+        let paramTable = GRIB2_CODETABLES.find(elem => 
+            elem.discipline == this.discipline
+            && elem.category == this.PRODUCT_DEFINITION_SECTION.parameterCategory );
+        return paramTable.entries[this.PRODUCT_DEFINITION_SECTION.parameterNumber].shortname;
     }
 }
 
 // https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/grib2_table4-2-0-2.shtml
 class JSGrib {
 
-    constructor (url) {
-        this.url = url;
-        this.buffer = null;
+    constructor (buffer) {
+        this.buffer = buffer;
         this.messages = [];
     }
 
-    async loadFile() {
-        try {
-            this.buffer = await fs.promises.readFile(this.url);
-            console.log('File loaded successfully.');
-        } catch (error) {
-            console.error('Error loading file:', error);
-        }
+    getMessageByParameterName (name) {
+        return this.messages.find( message => name == message.parameterName());
     }
 
     decodeGrib () {
         console.log(`Decoding ${this.buffer.length} bytes`);
         let offset = 0;        
         while (offset < this.buffer.length) {
-            let message = {};
+            let message = new Message();
             console.log(`Decoding message at ${offset}`);
             offset += this.decodeMessage(message, offset);
             this.messages.push(message);
@@ -61,29 +64,35 @@ class JSGrib {
     
     decodeIndicatorSection (message, offset) {
         message.magicBytes = this.buffer.subarray(offset, offset+4).toString();
+        message.discipline = this.buffer.readUint8(offset+6);
         message.editionNUmber = this.buffer.readUint8(offset+7)
         message.totalLength = this.readUint64BE(offset+8);
         return offset + 16;
     }
 
     decodeSection (message, offset) {
-        let section = {};
-        let sectionLength = this.buffer.readUInt32BE(offset);
-        let sectionNumber = this.buffer.readUInt8(offset+4);
-        let sectionSpec = GRIB2_SECTIONS[sectionNumber];
+        let section = {
+            "_length": this.buffer.readUInt32BE(offset),
+            "_number": this.buffer.readUInt8(offset+4)
+        }
+        let sectionSpec = GRIB2_SECTIONS[section._number];
         if (message[sectionSpec.name]) {
             throw('Repeated sections not implemented');
         }
         message[sectionSpec.name] = section;
         console.log(`Decoding ${sectionSpec.name}`);
-        this.decodeFieldList(message, section, sectionSpec, sectionSpec.fields, offset, sectionLength);
-        return offset+sectionLength;
+        if (sectionSpec.name == 'DATA_SECTION') {
+            this.decodeDataSection(message, section, offset);
+        } else {   
+            this.decodeFieldList(message, section, sectionSpec, sectionSpec.fields, offset);
+        }
+        return offset+section._length;
     }
 
-    decodeFieldList (message, section, sectionSpec, fieldList, offset, sectionLength) {
+    decodeFieldList (message, section, sectionSpec, fieldList, offset) {
         let endOffset = offset;
         for (const fieldSpec of fieldList) {
-            if (endOffset >= offset+sectionLength) {
+            if (endOffset >= offset+section._length) {
                 break;
             } else {
                 endOffset = this.decodeField(message, section, sectionSpec, fieldSpec, offset);
@@ -92,8 +101,7 @@ class JSGrib {
         return endOffset;
     }
 
-    decodeField (message, section, sectionSpec, fieldSpec, offset, sectionLength) {
-        let byteSpec = this.parseByteSpec(fieldSpec.octets);
+    decodeField (message, section, sectionSpec, fieldSpec, offset) {
         switch (fieldSpec.type) {   
         case 'unsigned':
         case 'codetable':
@@ -105,7 +113,7 @@ class JSGrib {
             return this.decodeIEEEFloat(message, section, fieldSpec, offset);
         case 'template':
             let template = this.getTemplate(sectionSpec, section[fieldSpec.name]);
-            return this.decodeFieldList(message, section, sectionSpec, template.fields, offset, sectionLength);
+            return this.decodeFieldList(message, section, sectionSpec, template.fields, offset);
         default:
             console.log(`Missed case ${fieldSpec.type}`);
             break;
@@ -175,18 +183,49 @@ class JSGrib {
         let low = this.buffer.readUInt32BE(offset+4);
         return (high << 32) + low;
     }
+
+    decodeDataSection (message, section, offset) {
+        let dataRepresentation = message.DATA_REPRESENTATION_SECTION;
+        if (dataRepresentation.dataRepresentationTemplateNumber == '40') {
+            console.log('Decoding JPEG2000');
+            let rawData = this.buffer.subarray(offset+5, offset + section._length);
+            let binPow = Math.pow(2, message.DATA_REPRESENTATION_SECTION.binaryScaleFactor);
+            let decPow = Math.pow(10, message.DATA_REPRESENTATION_SECTION.decimalScaleFactor);
+            let referenceValue = message.DATA_REPRESENTATION_SECTION.referenceValue;
+            let unpacked = decodeJPXImage(rawData);
+            section.data = new Float32Array(unpacked.length);
+            for (let i = 0; i<unpacked.length; i++) {
+               section.data[i] = this.decodeValue(unpacked[i], referenceValue, binPow, decPow);
+            }
+        } else if (dataRepresentation.dataRepresentationTemplateNumber == '3') {
+            console.log('Decoding JPEG2000');
+            let rawData = this.buffer.subarray(offset+5, offset + section._length);
+            let binPow = Math.pow(2, message.DATA_REPRESENTATION_SECTION.binaryScaleFactor);
+            let decPow = Math.pow(10, message.DATA_REPRESENTATION_SECTION.decimalScaleFactor);
+            let referenceValue = message.DATA_REPRESENTATION_SECTION.referenceValue;
+            section.data = new Float32Array(rawData.length);
+            for (let i = 0; i<rawData.length; i++) {
+               section.data[i] = this.decodeValue(rawData[i], referenceValue, binPow, decPow);
+            }
+        } else {
+            console.error(`Data representation template ${dataRepresentation.dataRepresentationTemplateNumber} not implemented`);
+        }
+    }
+
+    decodeValue (encodedValue, referenceValue, binPow, decPow) {
+        return (referenceValue + encodedValue * binPow) / decPow;
+    }
+
 }
 
-// Usage
-let t0 = new Date();
-// const jsGrib = new JSGrib('/home/michael/Wetter/vr/0p25/20240517/18/20240517.18.006.0p25.grb');
-// const jsGrib = new JSGrib('/home/michael/Wetter/vr/1p00/20240517/18/20240517.18.006.1p00.grb');
-// const jsGrib = new JSGrib('/home/michael/Wetter/vr/1p00/20240517/18/20240517.18.015.1p00.grb');
-const jsGrib = new JSGrib('/home/michael/Wetter/noaa/archive/2024/05/17/20240517_gfs.t12z.pgrb2.0p25.f009.grib2');
-// const jsGrib = new JSGrib('/home/michael/Wetter/noaa/archive/2024/05/17/20240517_gfs.t12z.pgrb2.1p00.f009.grib2');
-jsGrib.loadFile().then(() => {
-    console.log(`Loaded data in ${new Date()-t0}ms`);
+function decodeGRIB2ArrayBuffer (arrayBuffer) {
+    let buffer = Buffer.from(arrayBuffer);
+    const jsGrib = new JSGrib(buffer);
     jsGrib.decodeGrib();
-    console.log(`Finished in ${new Date()-t0}ms`);
-    console.log(JSON.stringify(jsGrib.messages, undefined, ' '));
-}) ;
+    return jsGrib;
+}
+
+export {
+    decodeGRIB2ArrayBuffer
+}
+

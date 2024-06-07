@@ -4,12 +4,15 @@
 (defstruct (template (:constructor template (section template fields))) section template fields)
 (defstruct (field (:constructor field (name octets type)))
   name octets type)
+(defstruct (codetable (:constructor codetable (discipline category entries)))
+  discipline category entries)
 (defstruct (code (:constructor code  (code description unit shortname)))
   code description unit shortname)
 
-(defun generate-json (section-file-name template-file-name outfilename)
+(defun generate-json (section-file-name template-file-name codetable-file-name outfilename)
   (let ((sections (parse-sections section-file-name))
-        (templates (parse-templates template-file-name)))
+        (templates (parse-templates template-file-name))
+        (codetables (parse-codetables codetable-file-name)))
     (dolist (template templates)
       (let ((section
               (find-if (lambda (section)
@@ -22,7 +25,10 @@
     (with-open-file (out outfilename :direction :output :if-exists :supersede :if-does-not-exist :create)
       (format out "~a" "const GRIB2_SECTIONS = ")
       (json out sections)
-      (format out "~%~a~%" "export { GRIB2_SECTIONS }"))))
+      (format out "~%")
+      (format out "~a" "const GRIB2_CODETABLES = ")
+      (json out codetables)
+      (format out "~%~a~%" "export { GRIB2_SECTIONS, GRIB2_CODETABLES }"))))
 
 (defun parse-sections (infilename)
   (with-open-file (in infilename)
@@ -83,15 +89,38 @@
       (cl-utilities:split-sequence #\space line :count 3 :remove-empty-subseqs t)
     (field key octets type)))
 
-(defun parse-codetable (infilename)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun parse-codetables (infilename)
   (with-open-file (in infilename)
     (loop
+      :with codetables = ()
+      :with name = nil
+      :with discipline = nil
+      :with category = nil
+      :with entries = ()
       :for line = (read-line in nil nil)
       :for _ =   (format t "LINE: ~a~%" line)
       :while line
-      :collect (parse-codetable-line line))))
+      :do (cond
+            ((= (length line) 0))
+            ((char= (aref line 0) #\;))
+            ((char= (aref line 0) #\=)
+             (when discipline
+               (push (codetable discipline category (nreverse entries))
+                     codetables)
+               (setf entries ()))
+             (destructuring-bind (pref key1 _discipline key2 _category _name suff)
+                 (cl-utilities:split-sequence #\space line :remove-empty-subseqs t)
+               (setf name _name)
+               (setf discipline _discipline)
+               (setf category _category)))
+            (t
+             (destructuring-bind  (code description unit shortname)
+                 (cl-utilities:split-sequence #\| line)
+               (push (code code (substitute #\space #\" description) unit shortname) entries))))
+      :finally (return (nreverse
+                        (push (codetable discipline category (nreverse entries))
+                              codetables))))))
 
-(defun parse-codetable-line (line)
-   (destructuring-bind  (code description unit shortname)
-       (cl-utilities:split-sequence #\| line)
-     (code code description unit shortname)))
+;;; EOF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
