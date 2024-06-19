@@ -2,16 +2,6 @@ import { GRIB2_SECTIONS, GRIB2_CODETABLES } from './GRIB2_Sections.js';
 import { JpxImage } from './jpeg2000/src/jpx.js'
 import { Buffer } from './buffer/index.js'
 
-const decodeJPXImage = function (rawData) {
-    let t0 = new Date();
-    const JPX = new JpxImage()
-    JPX.parse(rawData);
-    let t1 = new Date()
-    console.assert(JPX.tiles.length == 1, 'Unexpected number of tiles %d, wanted exactly one.', JPX.tiles.length);
-    console.log('Decoded JPEG2000 width:%d height:%d values:%d in %dms', JPX.width, JPX.height, JPX.tiles[0].items.length, t1 - t0);
-    return JPX.tiles[0].items;
-}
-
 class Message {
     parameterName() {
         let paramTable = GRIB2_CODETABLES.find(elem =>
@@ -33,6 +23,8 @@ class JSGrib {
     constructor(buffer) {
         this.buffer = buffer;
         this.messages = [];
+        this.decodeGrib();
+        this.buffer = undefined;
     }
 
     getMessageByParameterName(name) {
@@ -201,27 +193,20 @@ class JSGrib {
         if (rep.dataRepresentationTemplateNumber == '40') {
             console.log('Decoding JPEG2000');
             let rawData = this.buffer.subarray(offset + 5, offset + section._length);
-            let unpacked = decodeJPXImage(rawData);
-            let binPow = Math.pow(2, message.DATA_REPRESENTATION_SECTION.binaryScaleFactor);
-            let decPow = Math.pow(10, message.DATA_REPRESENTATION_SECTION.decimalScaleFactor);
-            let referenceValue = message.DATA_REPRESENTATION_SECTION.referenceValue;
-            section.data = new Float32Array(unpacked.length);
-            for (let i = 0; i < unpacked.length; i++) {
-                section.data[i] = this.decodeValue(unpacked[i], referenceValue, binPow, decPow);
-            }
+            let unpacked = this.decodeJPXImage(rawData);
+            section.data = this.scaleValues(message, unpacked);
         } else if (rep.dataRepresentationTemplateNumber == '3') {
             let unscaledMin = [];
-            offset = this.readValues(this.buffer, { "offset": offset + 5, "bit": 0 }, unscaledMin, rep.orderOfSpatialDifferencing + 1, rep.numberOfOctetsExtraDescriptors * 8, true);
-            console.log(`UnscaledMin: ${unscaledMin}`);
-
+            offset = this.readPacked(this.buffer, { "offset": offset + 5, "bit": 0 }, unscaledMin, rep.orderOfSpatialDifferencing + 1, rep.numberOfOctetsExtraDescriptors * 8, true);
+ 
             let groupReferenceValues = [];
-            offset = this.readValues(this.buffer, offset, groupReferenceValues, rep.numberOfGroupsOfDataValues, rep.bitsPerValue, true, false);
+            offset = this.readPacked(this.buffer, offset, groupReferenceValues, rep.numberOfGroupsOfDataValues, rep.bitsPerValue, true, false);
 
             let groupWidth = [];
-            offset = this.readValues(this.buffer, offset, groupWidth, rep.numberOfGroupsOfDataValues, rep.numberOfBitsUsedForTheGroupWidths, true, false);
+            offset = this.readPacked(this.buffer, offset, groupWidth, rep.numberOfGroupsOfDataValues, rep.numberOfBitsUsedForTheGroupWidths, true, false);
 
             let groupLength = [];
-            offset = this.readValues(this.buffer, offset, groupLength, rep.numberOfGroupsOfDataValues, rep.numberOfBitsForScaledGroupLengths, true, false);
+            offset = this.readPacked(this.buffer, offset, groupLength, rep.numberOfGroupsOfDataValues, rep.numberOfBitsForScaledGroupLengths, true, false);
 
             let packedValues = [];
             for (var k = 0; k < groupLength.length; k++) {
@@ -236,7 +221,7 @@ class JSGrib {
                     }
                 } else {
                     try {
-                        offset = this.readValues(this.buffer, offset, groupValues, Ln, groupWidth[k], false, false);
+                        offset = this.readPacked(this.buffer, offset, groupValues, Ln, groupWidth[k], false, false);
                     } catch (e) {
                         console.log(`Error reading group ${k}/${groupLength.length}`);
                         throw e;
@@ -245,8 +230,6 @@ class JSGrib {
                 groupValues = groupValues.map(v => v + groupReferenceValues[k]);
                 packedValues.push(...groupValues);
             }
-            console.log(`packedValues: ${packedValues.length}`);
-            console.log(`packedValues: ${packedValues.slice(0, 10)}`)
             let h = packedValues.map(v => v + unscaledMin[2]);
             let f = [unscaledMin[0], unscaledMin[1]];
             let g = [unscaledMin[0], f[1]-f[0]];
@@ -256,16 +239,8 @@ class JSGrib {
             for (var k = 2; k<g.length; k++ ) {
                 f[k] = f[k-1] + g[k];
             }
-            
-            let binPow = Math.pow(2, message.DATA_REPRESENTATION_SECTION.binaryScaleFactor);
-            let decPow = Math.pow(10, message.DATA_REPRESENTATION_SECTION.decimalScaleFactor);
-            let referenceValue = message.DATA_REPRESENTATION_SECTION.referenceValue;
-            section.data = new Float32Array(f.length);
-            for (let i = 0; i < f.length; i++) {
-                section.data[i] = this.decodeValue(f[i], referenceValue, binPow, decPow);
-            }
+            section.data = this.scaleValues(message, f);
             console.log(`values: ${section.data.subarray(0, 10)}`)
-
         } else {
             console.error(`Data representation template ${rep.dataRepresentationTemplateNumber} not implemented`);
         }
@@ -275,7 +250,28 @@ class JSGrib {
         return (referenceValue + encodedValue * binPow) / decPow;
     }
 
-    readValues(buffer, start, result, number, bitLength, fill, signed = true) {
+    decodeJPXImage (rawData) {
+        let t0 = new Date();
+        const JPX = new JpxImage()
+        JPX.parse(rawData);
+        let t1 = new Date()
+        console.assert(JPX.tiles.length == 1, 'Unexpected number of tiles %d, wanted exactly one.', JPX.tiles.length);
+        console.log('Decoded JPEG2000 width:%d height:%d values:%d in %dms', JPX.width, JPX.height, JPX.tiles[0].items.length, t1 - t0);
+        return JPX.tiles[0].items;
+    }
+    
+    scaleValues (message, values) {
+        let binPow = Math.pow(2, message.DATA_REPRESENTATION_SECTION.binaryScaleFactor);
+        let decPow = Math.pow(10, message.DATA_REPRESENTATION_SECTION.decimalScaleFactor);
+        let referenceValue = message.DATA_REPRESENTATION_SECTION.referenceValue;
+        let result = new Float32Array(values.length);
+        for (let i = 0; i < values.length; i++) {
+            result[i] = this.decodeValue(values[i], referenceValue, binPow, decPow);
+        }
+        return result;
+    }
+
+    readPacked(buffer, start, result, number, bitLength, fill, signed = true) {
         let offset = start.offset;
         let bit = start.bit;
         let byte = buffer.readUInt8(offset);
@@ -308,15 +304,12 @@ class JSGrib {
             "bit": bit
         }
     }
-
 }
 
 function decodeGRIB2ArrayBuffer(arrayBuffer) {
     let buffer = Buffer.from(arrayBuffer);
-    const jsGrib = new JSGrib(buffer);
     try {
-        jsGrib.decodeGrib();
-        return jsGrib;
+        return new JSGrib(buffer);
     } catch (e) {
         console.log(e);
         return undefined
