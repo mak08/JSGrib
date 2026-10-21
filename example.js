@@ -1,6 +1,7 @@
 // JSGrib usage example
 import * as fs from 'fs';
 import {decodeGRIB2ArrayBuffer} from './JSGrib.js'
+import { buffer } from 'stream/consumers';
 
 async function loadFile(url) {
      try {
@@ -41,8 +42,13 @@ let t0 = new Date();
 //     }
 // );
 
-// loadFile('/home/michael/Wetter/noaa/archive/2024/06/04/20240604_gfs.t12z.pgrb2.1p00.f009.grib2').then((buffer) => {
-loadFile('/home/michael/Wetter/vr/0p25/20240517/18/20240517.18.006.0p25.grb').then((buffer) => {
+// loadFile('/home/michael/Repository/rs-test/src/data/big.grb').then((buffer) => {
+// loadFile('/home/michael/Wetter/noaa/1p00/20250818/12/20250818_gfs.t12z.pgrb2.1p00.f288.grib2').then((buffer) => {
+// loadFile('/home/michael/Wetter/noaa/0p25/20250818/12/20250818_gfs.t12z.pgrb2.0p25.f288.grib2').then((buffer) => {
+// loadFile('/home/michael/Wetter/vr/0p25/20250818/12/20250818.12.288.0p25.grb').then((buffer) => {
+loadFile('/home/michael/Repository/cl-weather/weather/fw-current-agulhas/20260131/fw-current-agulhas.20260131.grib2').then((buffer) => {
+    // loadFile('/home/michael/Wetter/noaa/archive/2024/06/04/20240604_gfs.t12z.pgrb2.1p00.f009.grib2').then((buffer) => {
+// loadFile('/home/michael/Wetter/vr/0p25/20240517/18/20240517.18.006.0p25.grb').then((buffer) => {
 // loadFile('/home/michael/Wetter/vr/1p00/20240517/18/20240517.18.006.1p00.grb').then((buffer) => {
 // loadFile('/home/michael/Downloads/20240602.12.018.0p25.grb').then((buffer) => {
 // loadFile('/home/michael/Wetter/noaa/archive/2024/05/17/20240517_gfs.t12z.pgrb2.0p25.f009.grib2').then((buffer) => {

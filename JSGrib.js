@@ -1,6 +1,7 @@
 import { GRIB2_SECTIONS, GRIB2_CODETABLES } from './GRIB2_Sections.js';
 import { JpxImage } from './jpeg2000/src/jpx.js'
 import { Buffer } from './buffer/index.js'
+import { decodeCCSDS } from './CCSDS.js'
 
 class Message {
     parameterName() {
@@ -194,6 +195,11 @@ class JSGrib {
             console.log('Decoding JPEG2000');
             let rawData = this.buffer.subarray(offset + 5, offset + section._length);
             let unpacked = this.decodeJPXImage(rawData);
+            section.data = this.scaleValues(message, unpacked);
+        } else if (rep.dataRepresentationTemplateNumber == '42') {
+            console.log('Decoding CCSDS');
+            let rawData = this.buffer.subarray(offset + 5, offset + section._length);
+            let unpacked = decodeCCSDS(rawData, rep.numberOfValues, rep);
             section.data = this.scaleValues(message, unpacked);
         } else if (rep.dataRepresentationTemplateNumber == '3') {
             let unscaledMin = [];
