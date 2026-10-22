@@ -45,6 +45,7 @@ class JSGrib {
             }
         } catch (e) {
             console.log(e);
+            throw e;
         }
     }
 
@@ -74,6 +75,9 @@ class JSGrib {
             "_number": this.buffer.readUInt8(offset + 4)
         }
         let sectionSpec = GRIB2_SECTIONS[section._number];
+        if (!sectionSpec) {
+            throw new Error(`Unsupported GRIB section ${section._number} at byte ${offset}`);
+        }
         if (message[sectionSpec.name]) {
             throw ('Repeated sections not implemented');
         }
@@ -113,9 +117,10 @@ class JSGrib {
             case 'template':
                 let template = this.getTemplate(sectionSpec, section[fieldSpec.name]);
                 return this.decodeFieldList(message, section, sectionSpec, template.fields, offset);
+            case 'use':
+                return offset + section._length;
             default:
-                console.log(`Missed case ${fieldSpec.type}`);
-                break;
+                throw new Error(`Unsupported GRIB field type ${fieldSpec.type}`);
         }
     }
 
@@ -318,7 +323,7 @@ function decodeGRIB2ArrayBuffer(arrayBuffer) {
         return new JSGrib(buffer);
     } catch (e) {
         console.log(e);
-        return undefined
+        throw e;
     }
 }
 
