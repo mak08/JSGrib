@@ -10,11 +10,16 @@ from Node.js.
 - Parses GRIB2 message sections and their fields using the bundled section and
   code-table definitions in `GRIB2_Sections.js`.
 - Decodes data representation templates:
-  - 5.3: complex packing with spatial differencing
+  - 5.0: simple packing (including constant fields)
+  - 5.3: complex packing with first- or second-order spatial differencing
   - 5.40: JPEG2000 packing
   - 5.42: CCSDS/AEC packing
 - Applies GRIB reference values and binary/decimal scale factors to produce
   decoded `Float32Array` data.
+- Expands explicit GRIB bitmaps to the full grid, representing missing samples as
+  `NaN`. An explicit bitmap is supported with every supported packing template.
+- Recognizes ocean-current components `UOGRD`/`VOGRD` (Fairwinds) and
+  `SVE`/`SVN` (IFS). Unknown parameters have a `discipline.category.number` name.
 - Provides each message's reference timestamp and parameter name, and supports
   looking up a message by parameter name.
 
@@ -79,3 +84,48 @@ console.log(uWind?.DATA_SECTION.data);
 `Buffer`. It returns an object with a `messages` array. Each decoded message
 contains its parsed section data; decoded field values are available at
 `message.DATA_SECTION.data`.
+
+## Current GRIB support and verification
+
+The cached current products were checked with ecCodes on 18 November 2026:
+
+| Source | Packing | Messages checked | Grid values checked | Maximum absolute difference |
+| --- | --- | ---: | ---: | ---: |
+| Fairwinds English Channel (IBI) | Simple, 5.0 | 34 | 5,948,640 | 1.20e-7 m/s |
+| Fairwinds Agulhas | Spatial differencing, 5.3 | 42 | 15,430,002 | 1.20e-7 m/s |
+| ECMWF IFS currents, 12Z hour 0 | CCSDS, 5.42, with bitmap | 2 | 2,076,480 | 0 |
+
+All 701,982 missing IFS nodes matched ecCodes. GFS and IFS wind fields were
+also compared to check the shared decoder; both passed within Float32 rounding.
+Multi-message files are decoded through their final frame, without skipping
+messages after the second component.
+
+Run the self-contained regression suite, including a small ecCodes-generated
+CCSDS/bitmap fixture:
+
+```sh
+node tests/current-grib-tests.mjs
+```
+
+To compare **every** value in locally available forecasts against ecCodes:
+
+```sh
+python3 tests/compare-eccodes.py /path/to/current.grib2 /path/to/wind.grib2
+```
+
+The comparison needs Node.js and the ecCodes shared library, but no Python
+packages, downloads or installation step. See [tests/README.md](tests/README.md).
+The packing and bitmap layout follow the
+[ECMWF GRIB2 definitions](https://codes.ecmwf.int/grib/format/grib2/).
+
+Limitations: predefined/reused bitmaps, repeated sections within one message,
+and complex packing with internal missing-value management are unsupported
+and rejected explicitly. None occurs in the current products checked above.
+`timestamp()` is the reference time; the forecast lead time remains in
+`PRODUCT_DEFINITION_SECTION.forecastTime` and its time-unit field.
+
+This decoder stage does not change Bitsailor's server-side current sampling.
+Moving the overlay next requires client frame/time selection, interpolation
+that respects regional grid origins and scan directions, bounded caches, and
+coastal masking. In particular, missing bitmap nodes must not be confused with
+measured zero currents, and offshore interpolation must not draw arrows inland.

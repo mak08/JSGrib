@@ -8,7 +8,9 @@ class Message {
         let paramTable = GRIB2_CODETABLES.find(elem =>
             elem.discipline == this.discipline
             && elem.category == this.PRODUCT_DEFINITION_SECTION.parameterCategory);
-        return paramTable.entries[this.PRODUCT_DEFINITION_SECTION.parameterNumber].shortname;
+        const number = this.PRODUCT_DEFINITION_SECTION.parameterNumber;
+        return paramTable?.entries.find(entry => Number(entry.code) === number)?.shortname
+            || `${this.discipline}.${this.PRODUCT_DEFINITION_SECTION.parameterCategory}.${number}`;
     }
     timestamp() {
         let ident = this.IDENTIFICATION_SECTION;
@@ -19,9 +21,8 @@ class Message {
 
 class JSGrib {
 
-    mask = [128, 64, 32, 16, 8, 4, 2, 1];
-        
-    constructor(buffer) {
+    constructor(buffer, {decodeData = true} = {}) {
+        this.decodeData = decodeData;
         this.buffer = buffer;
         this.messages = [];
         this.decodeGrib();
@@ -39,7 +40,7 @@ class JSGrib {
             while (offset < this.buffer.length) {
                 let message = new Message();
                 console.log(`Decoding message at ${offset}`);
-                offset += this.decodeMessage(message, offset);
+                offset = this.decodeMessage(message, offset);
                 console.log(`Message timestamp: ${message.timestamp()}`);
                 this.messages.push(message);
             }
@@ -51,8 +52,12 @@ class JSGrib {
 
     decodeMessage(message, startOffset) {
         let offset = this.decodeIndicatorSection(message, startOffset);
+        if (message.magicBytes !== 'GRIB' || message.editionNUmber !== 2 ||
+            message.totalLength < 20 || startOffset + message.totalLength > this.buffer.length) {
+            throw new Error(`Invalid or truncated GRIB2 message at byte ${startOffset}`);
+        }
         while (offset < startOffset + message.totalLength - 4) {
-            offset = this.decodeSection(message, offset);
+            offset = this.decodeSection(message, offset, startOffset + message.totalLength - 4);
         }
         let endMarker = this.buffer.subarray(offset, offset + 4).toString();
         if (endMarker != '7777') {
@@ -69,10 +74,14 @@ class JSGrib {
         return offset + 16;
     }
 
-    decodeSection(message, offset) {
+    decodeSection(message, offset, endOffset) {
+        if (offset + 5 > endOffset) throw new Error(`Truncated section header at byte ${offset}`);
         let section = {
             "_length": this.buffer.readUInt32BE(offset),
             "_number": this.buffer.readUInt8(offset + 4)
+        }
+        if (section._length < 5 || offset + section._length > endOffset) {
+            throw new Error(`Invalid or truncated section at byte ${offset}`);
         }
         let sectionSpec = GRIB2_SECTIONS[section._number];
         if (!sectionSpec) {
@@ -83,8 +92,13 @@ class JSGrib {
         }
         message[sectionSpec.name] = section;
         console.log(`Decoding ${sectionSpec.name}`);
-        if (sectionSpec.name == 'DATA_SECTION') {
-            this.decodeDataSection(message, section, offset);
+        if (section._number === 6) {
+            this.decodeBitmap(message, section, offset);
+        } else if (sectionSpec.name == 'DATA_SECTION') {
+            if (this.decodeData) {
+                this.decodeDataSection(message, section, offset);
+                this.expandBitmap(message, section);
+            }
         } else {
             this.decodeFieldList(message, section, sectionSpec, sectionSpec.fields, offset);
         }
@@ -156,14 +170,8 @@ class JSGrib {
     }
 
     decodeSignedInteger(bitLength, value) {
-        let highBit = -(2 << bitLength - 2);
-        let mask = highBit - 1;
-        if ((value & highBit) == -highBit) {
-            value = value & mask;
-            return -value;
-        } else {
-            return value;
-        }
+        const sign = 2 ** (bitLength - 1);
+        return value >= sign ? -(value - sign) : value;
     }
 
     getTemplate(sectionSpec, templateNumber) {
@@ -189,7 +197,9 @@ class JSGrib {
     readUint64BE(offset) {
         let high = this.buffer.readUInt32BE(offset);
         let low = this.buffer.readUInt32BE(offset + 4);
-        return (high << 32) + low;
+        const value = high * 2 ** 32 + low;
+        if (!Number.isSafeInteger(value)) throw new Error('GRIB message exceeds safe integer size');
+        return value;
     }
 
    decodeDataSection(message, section, offset) {
@@ -206,55 +216,82 @@ class JSGrib {
             let rawData = this.buffer.subarray(offset + 5, offset + section._length);
             let unpacked = decodeCCSDS(rawData, rep.numberOfValues, rep);
             section.data = this.scaleValues(message, unpacked);
-        } else if (rep.dataRepresentationTemplateNumber == '3') {
-            let unscaledMin = [];
-            offset = this.readPacked(this.buffer, { "offset": offset + 5, "bit": 0 }, unscaledMin, rep.orderOfSpatialDifferencing + 1, rep.numberOfOctetsExtraDescriptors * 8, true);
- 
-            let groupReferenceValues = [];
-            offset = this.readPacked(this.buffer, offset, groupReferenceValues, rep.numberOfGroupsOfDataValues, rep.bitsPerValue, true, false);
-
-            let groupWidth = [];
-            offset = this.readPacked(this.buffer, offset, groupWidth, rep.numberOfGroupsOfDataValues, rep.numberOfBitsUsedForTheGroupWidths, true, false);
-
-            let groupLength = [];
-            offset = this.readPacked(this.buffer, offset, groupLength, rep.numberOfGroupsOfDataValues, rep.numberOfBitsForScaledGroupLengths, true, false);
-
-            let packedValues = [];
-            for (var k = 0; k < groupLength.length; k++) {
-                let groupValues = [];
-                let Ln = rep.referenceForGroupLengths + groupLength[k] * rep.lengthIncrementForTheGroupLengths;
-                if (k == groupLength.length - 1) {
-                    Ln = rep.trueLengthOfLastGroup;
-                }
-                if (groupWidth[k] == 0) {
-                    for (var i = 0; i < Ln; i++) {
-                        groupValues.push(0);
-                    }
-                } else {
-                    try {
-                        offset = this.readPacked(this.buffer, offset, groupValues, Ln, groupWidth[k], false, false);
-                    } catch (e) {
-                        console.log(`Error reading group ${k}/${groupLength.length}`);
-                        throw e;
-                    }
-                }
-                groupValues = groupValues.map(v => v + groupReferenceValues[k]);
-                packedValues.push(...groupValues);
-            }
-            let h = packedValues.map(v => v + unscaledMin[2]);
-            let f = [unscaledMin[0], unscaledMin[1]];
-            let g = [unscaledMin[0], f[1]-f[0]];
-            for (var k = 2; k<h.length; k++) {
-                g[k] = g[k-1] + h[k];
-            }
-            for (var k = 2; k<g.length; k++ ) {
-                f[k] = f[k-1] + g[k];
-            }
-            section.data = this.scaleValues(message, f);
-            console.log(`values: ${section.data.subarray(0, 10)}`)
+        } else if (rep.dataRepresentationTemplateNumber === 0) {
+            const values = [];
+            this.readPacked(this.buffer.subarray(offset + 5, offset + section._length),
+                {offset: 0, bit: 0}, values, rep.numberOfValues, rep.bitsPerValue, false, false);
+            section.data = this.scaleValues(message, values);
+        } else if (rep.dataRepresentationTemplateNumber === 3) {
+            section.data = this.scaleValues(message,
+                this.decodeSpatialDifferencing(this.buffer.subarray(offset + 5, offset + section._length), rep));
         } else {
-            console.error(`Data representation template ${rep.dataRepresentationTemplateNumber} not implemented`);
+            throw new Error(`Data representation template 5.${rep.dataRepresentationTemplateNumber} not implemented`);
         }
+        if (section.data.length !== rep.numberOfValues) throw new Error('Incorrect packed value count');
+    }
+
+    // GRIB bitmaps omit missing nodes from section 7. Preserve them as NaN,
+    // rather than shifting the remaining samples or inventing zero measurements.
+    decodeBitmap(message, section, offset) {
+        if (section._length < 6) throw new Error('Truncated bitmap section');
+        section.bitMapIndicator = this.buffer.readUInt8(offset + 5);
+        if (section.bitMapIndicator === 255) return;
+        if (section.bitMapIndicator !== 0) throw new Error(`Unsupported bitmap indicator ${section.bitMapIndicator}`);
+        const count = message.GRID_DEFINITION_SECTION.numberOfDataPoints;
+        if (section._length !== 6 + Math.ceil(count / 8)) throw new Error('Incorrect bitmap length');
+        section.bitmap = this.buffer.subarray(offset + 6, offset + section._length);
+    }
+
+    expandBitmap(message, section) {
+        const count = message.GRID_DEFINITION_SECTION.numberOfDataPoints;
+        const bitmap = message['BIT-MAP_SECTION'].bitmap;
+        if (!bitmap) {
+            if (section.data.length !== count) throw new Error('Incorrect grid value count');
+            return;
+        }
+        const expanded = new Float32Array(count).fill(NaN);
+        let packed = 0;
+        for (let i = 0; i < count; i++) {
+            if (bitmap[i >> 3] & (128 >> (i & 7))) {
+                if (packed >= section.data.length) throw new Error('Bitmap exceeds packed value count');
+                expanded[i] = section.data[packed++];
+            }
+        }
+        if (packed !== section.data.length) throw new Error('Bitmap does not match packed value count');
+        section.data = expanded;
+        // Do not retain a view of the whole downloaded file through the bitmap.
+        message['BIT-MAP_SECTION'].bitmap = Uint8Array.from(bitmap);
+    }
+
+    // Template 5.3: group widths/lengths are offsets from their references.
+    // Initial values are unsigned; only the minimum difference is sign-magnitude.
+    decodeSpatialDifferencing(data, rep) {
+        if (![1, 2].includes(rep.orderOfSpatialDifferencing) || rep.missingValueManagementUsed !== 0) {
+            throw new Error('Unsupported spatial differencing order or internal missing-value mode');
+        }
+        const order = rep.orderOfSpatialDifferencing;
+        const initial = [], minimum = [], references = [], widths = [], lengths = [];
+        let at = this.readPacked(data, {offset: 0, bit: 0}, initial, order,
+            rep.numberOfOctetsExtraDescriptors * 8, false, false);
+        at = this.readPacked(data, at, minimum, 1, rep.numberOfOctetsExtraDescriptors * 8, false, true);
+        at = this.readPacked(data, at, references, rep.numberOfGroupsOfDataValues, rep.bitsPerValue, true, false);
+        at = this.readPacked(data, at, widths, rep.numberOfGroupsOfDataValues, rep.numberOfBitsUsedForTheGroupWidths, true, false);
+        at = this.readPacked(data, at, lengths, rep.numberOfGroupsOfDataValues, rep.numberOfBitsForScaledGroupLengths, true, false);
+        const differences = [];
+        for (let k = 0; k < lengths.length; k++) {
+            const length = k === lengths.length - 1 ? rep.trueLengthOfLastGroup
+                : rep.referenceForGroupLengths + lengths[k] * rep.lengthIncrementForTheGroupLengths;
+            if (differences.length + length > rep.numberOfValues) throw new Error('Too many complex-packed values');
+            const values = [];
+            at = this.readPacked(data, at, values, length, widths[k] + rep.referenceForGroupWidths, false, false);
+            for (const value of values) differences.push(value + references[k] + minimum[0]);
+        }
+        if (differences.length !== rep.numberOfValues) throw new Error('Incorrect spatial difference count');
+        for (let i = 0; i < order; i++) differences[i] = initial[i];
+        for (let i = order; i < differences.length; i++) {
+            differences[i] += order === 1 ? differences[i - 1] : 2 * differences[i - 1] - differences[i - 2];
+        }
+        return differences;
     }
 
     decodeValue(encodedValue, referenceValue, binPow, decPow) {
@@ -283,44 +320,27 @@ class JSGrib {
     }
 
     readPacked(buffer, start, result, number, bitLength, fill, signed = true) {
-        let offset = start.offset;
-        let bit = start.bit;
-        let byte = buffer.readUInt8(offset);
-        for (var n = 0; n < number && offset < buffer.length; n++) {
+        if (!Number.isInteger(bitLength) || bitLength < 0 || bitLength > 53 ||
+            !Number.isSafeInteger(number) || number < 0) throw new Error('Invalid packed value size');
+        let position = start.offset * 8 + start.bit;
+        if (position + number * bitLength > buffer.length * 8) throw new Error('Truncated packed data');
+        for (let n = 0; n < number; n++) {
             let value = 0;
-            for (var k = 0; k < bitLength; k++) {
-                value <<= 1;
-                if ((byte & this.mask[bit]) == this.mask[bit]) {
-                    value += 1;
-                }
-                bit += 1;
-                if (bit % 8 == 0 && offset < buffer.length - 1) {
-                    offset += 1;
-                    byte = buffer.readUInt8(offset);
-                    bit = 0;
-                } else if (k < bitLength - 1 && offset >= buffer.length - 1) {
-                    throw `Reading past end of buffer at offset ${offset}, value ${n}/${number}, bit ${k}/${bitLength}`;
-                }
+            for (let k = 0; k < bitLength; k++, position++) {
+                value = value * 2 + ((buffer[position >> 3] >> (7 - (position & 7))) & 1);
             }
-            result.push(signed ? this.decodeSignedInteger(bitLength, value) : value);
+            result.push(signed && bitLength ? this.decodeSignedInteger(bitLength, value) : value);
         }
-
-        if (fill && (bit > 0)) {
-            offset += 1;
-            bit = 0;
-        }
-
-        return {
-            "offset": offset,
-            "bit": bit
-        }
+        if (fill) position = Math.ceil(position / 8) * 8;
+        return {offset: Math.floor(position / 8), bit: position % 8};
     }
+
 }
 
-function decodeGRIB2ArrayBuffer(arrayBuffer) {
+function decodeGRIB2ArrayBuffer(arrayBuffer, options) {
     let buffer = Buffer.from(arrayBuffer);
     try {
-        return new JSGrib(buffer);
+        return new JSGrib(buffer, options);
     } catch (e) {
         console.log(e);
         throw e;

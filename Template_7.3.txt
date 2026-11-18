@@ -1,0 +1,24 @@
+6-ww        First value(s) of original (undifferenced) scaled data values, followed by the overall minimum of the differences. The number of values stored is 1 greater than the order of differentiation, and the field width is described at octet 49 of Data Representation Template 5.3. (see Note 1)
+[ww+1]-xx   NG group reference values (X1 in the decoding formula), each of which is encoded using the number of bits specified in octet 20 of Data Representation Template 5.0. Bits set to zero shall be appended where necessary to ensure this sequence of numbers ends on an octet boundary.
+[xx+1]-yy   NG group widths, each of which is encoded using the number of bits specified in octet 37 of Data Representation Template 5.2. Bits set to zero shall be appended as necessary to ensure this sequence of numbers ends on an octet boundary.
+[yy+1]-zz   NG scaled group lengths, each of which is encoded using the number of bits specified in octet 47 of Data Representation Template 5.2. Bits set to zero shall be appended as necessary to ensure this sequence of numbers ends on an octet boundary. (see Note 14 of Data Representation Template 5.2)
+[zz+1]-nn   Packed values (X2 in the decoding formula), where each value is a deviation from its respective group reference value.
+
+Notes:
+( 1) Referring to the notation in Note (1) of Data Representation Template 5.3, at order 1, the values stored in octets 6-ww are g1 and gmin. At order 2, the values stored are h1, h2, and hmin.
+
+( 2) Extra descriptors related to spatial differencing are added before the splitting descriptors, to reflect the separation between the 2 approaches. It enables to share software parts between cases with and without spatial differencing.
+
+( 3) The position of overall minimum after initial data values is a choice that enables less software management.
+
+( 4) Overall minimum will be negative in most cases. First bit should indicate the sign: 0 if positive, 1 if negative.
+
+
+Notes:
+( 1) Group descriptors mentioned above may not be physically present; if associated field width is 0.
+
+( 2) Group lengths have no meaning for row by row packing; for consistency associated field width should then be encoded as 0. So no specific test for row by row case is mandatory at decoding software level to handle encoding/decoding of group descriptors.
+
+( 3) Scaled group lengths, if present, are encoded for each group. But the true last group length (unscaled) should be taken from Data Representation Template.
+
+( 4) For groups with a constant value, associated field width is 0, and no incremental data are physically present.

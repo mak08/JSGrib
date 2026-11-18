@@ -1974,6 +1974,14 @@ const GRIB2_SECTIONS = [
 ]
 const GRIB2_CODETABLES = [
 {
+"discipline": "10",
+"category": "3",
+"entries": [
+{"code": "14", "description": "Eastward sea water velocity", "unit": "m s-1", "shortname": "SVE"},
+{"code": "15", "description": "Northward sea water velocity", "unit": "m s-1", "shortname": "SVN"}
+]
+},
+{
 "discipline": "0",
 "category": "0",
 "entries": [

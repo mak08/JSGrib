@@ -1,0 +1,65 @@
+1-4     section5Length              unsigned    Length of section in octets (nn)
+5       numberOfSection             unsigned    Number of section (5)
+6-9     numberOfValues              unsigned    Number of data points where one or more values are specified in Section 7 when a bit map is present, total number of data points when a bit map is absent.
+10-11   dataRepresentationTemplateNumber    codetable   Data Representation Template Number (see Code Table 5.0)
+
+12-15   referenceValue              real    Reference value (R) (IEEE 32-bit floating-point value)
+16-17   binaryScaleFactor           signed  Binary scale factor (E)
+18-19   decimalScaleFactor          signed  Decimal scale factor (D)
+20      bitsPerValue                unsigned    Number of bits used for each packed value for simple packing, or for each group reference value for complex packing or spatial differencing
+21      typeOfOriginalFieldValues   codetable   Type of original field values (see Code Table 5.1)
+
+22      groupSplittingMethodUsed            codetable   Group splitting method used (see Code Table 5.4)
+23      missingValueManagementUsed          codetable   Missing value management used (see Code Table 5.5)
+24-27   primaryMissingValueSubstitute       unsigned    Primary missing value substitute
+28-31   secondaryMissingValueSubstitute     unsigned    Secondary missing value substitute
+32-35   numberOfGroupsOfDataValues          unsigned    NG - Number of groups of data values into which field is split
+36      referenceForGroupWidths             unsigned    Reference for group widths (see Note 12)
+37      numberOfBitsUsedForTheGroupWidths   unsigned    Number of bits used for the group widths (after the reference value in octet 36 has been removed)
+38-41   referenceForGroupLengths            unsigned    Reference for group lengths (see Note 13)
+42      lengthIncrementForTheGroupLengths   unsigned    Length increment for the group lengths (see Note 14)
+43-46   trueLengthOfLastGroup               unsigned    True length of last group
+47      numberOfBitsForScaledGroupLengths   unsigned    Number of bits used for the scaled group lengths (after subtraction of the reference value given in octets 38-41 and division by the length increment given in octet 42)
+
+48      orderOfSpatialDifferencing          codetable   Order of spatial differencing (see Code Table 5.6)
+49      numberOfOctetsExtraDescriptors      unsigned    Number of octets required in the Data Section to specify extra descriptors needed for spatial differencing (octets 6-ww in Data Template 7.3)
+
+( 1) Negative values of E or D shall be represented according to Regulation 92.1.5.
+
+Notes:
+( 1) Group lengths have no meaning for row by row packing, where groups are coordinate lines (so the Grid Description Section and possibly the Bit-map Section are enough); for consistency associated field width and reference should then be encoded as 0.
+
+( 2) For row by row packing with a bit-map, there should always be as many groups as rows. In case of rows with only missing values, all associated descriptors should be coded as zero.
+
+( 3) Management of widths into a reference and increments, together with management of lengths as scaled incremental values, are intended to save descriptor size (which is an issue as far as compression gains are concerned).
+
+( 4) Management of explicitly missing values is an alternative to bit-map use within Section 6; it is intended to reduce the whole GRIB message size.
+
+( 5) There may be two types of missing value(s), such as to make a distinction between static misses (for instance, due to a land/sea mask) and occasional misses.
+
+( 6) As an extra option, substitute value(s) for missing data may be specified. If not wished (or not applicable), all bits should be set to 1 for relevant substitute value(s).
+
+( 7) If substitute value(s) are specified, type of content should be consistent with original field values (floating-point - and then IEEE 32-bit encoded-, or integer).
+
+( 8) If primary missing values are used, such values are encoded within appropriate group with all bits set to 1 at packed data level.
+
+( 9) If secondary missing values are used, such values are encoded within appropriate group with all bits set to 1, except the last one set to 0, at packed data level.
+
+( 10) A group containing only missing values (of either type) will be encoded as a constant group (null width, no associated data) and the group reference will have all bits set to 1 for primary type, and all bits set to 1, except the last bit set to 0, for secondary type.
+
+( 11) If necessary, group widths and/or field width of group references may be enlarged to avoid ambiguities between missing value indicator(s) and true data.
+
+( 12) The group width is the number of bits used for every value in a group.
+
+( 13) The group length (L) is the number of values in a group.
+
+( 14) The essence of the complex packing method is to subdivide a field of values into NG groups, where the values in each group have similar sizes. In this procedure, it is necessary to retain enough information to recover the group lengths upon decoding. The NG group lengths for any given field can be described by Ln = ref + Kn * len_inc, n = 1,NG, where ref is given by octets 38-41 and len_inc by octet 42. The NG values of K (the scaled group lengths) are stored in the Data Section, each with the number of bits specified by octet 47. Since the last group is a special case which may not be able to be specified by this relationship, the length of the last group is stored in octets 43-46.
+
+( 15) See Data Template 7.2 and associated notes for complementary information.
+
+Notes:
+( 1) Spatial differencing is a pre-processing before group splitting at encoding time. It is intended to reduce the size of sufficiently smooth fields, when combined with a splitting scheme as described in Data Representation Template 5.2. At order 1, an initial field of values f is replaced by a new field of values g, where g1 = f1, g2 = f2 - f1, ..., gn = fn - fn-1. At order 2, the field of values g is itself replaced by a new field of values h, where h1 = f1, h2 = f2, h3 = g3 - g2, ..., hn = gn - gn-1. To keep values positive, the overall minimum of the resulting field (either gmin or hmin) is removed. At decoding time, after bit string unpacking, the original scaled values are recovered by adding the overall minimum and summing up recursively.
+
+( 2) For differencing of order n, the first n values in the array that are not missing are set to zero in the packed array. These dummy values are not used in unpacking.
+
+( 3) See Data Template 7.3 and associated notes for complementary information.

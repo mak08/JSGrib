@@ -736,3 +736,7 @@
 255|Missing||
 ; "Notes:
 ;  * Ice internal pressure or stress (Pa m) is the integrated pressure across the vertical thickness of a layer of ice. It is produced when concentrated ice reacts to external forces such as wind and ocen currents."
+
+==== DISCIPLINE 10 CATEGORY 3    Surface properties    ====
+14|Eastward sea water velocity|m s-1|SVE
+15|Northward sea water velocity|m s-1|SVN
