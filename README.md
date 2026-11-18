@@ -124,8 +124,10 @@ and rejected explicitly. None occurs in the current products checked above.
 `timestamp()` is the reference time; the forecast lead time remains in
 `PRODUCT_DEFINITION_SECTION.forecastTime` and its time-unit field.
 
-This decoder stage does not change Bitsailor's server-side current sampling.
-Moving the overlay next requires client frame/time selection, interpolation
-that respects regional grid origins and scan directions, bounded caches, and
-coastal masking. In particular, missing bitmap nodes must not be confused with
-measured zero currents, and offshore interpolation must not draw arrows inland.
+For multi-frame files, `decodeGRIB2ArrayBuffer(bytes, {decodeData: false})`
+parses message metadata without unpacking section 7. `totalLength` allows a
+caller to locate individual messages and decode just the U/V pair needed for
+a displayed forecast time. Default calls continue to decode all fields.
+Missing samples remain `NaN` in decoded arrays; consumers decide how to handle
+them during interpolation. Bitsailor's current overlay zeroes a whole U/V node
+if either component is missing, matching the router's current-vector handling.

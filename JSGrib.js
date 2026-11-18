@@ -1,4 +1,4 @@
-import { GRIB2_SECTIONS, GRIB2_CODETABLES } from './GRIB2_Sections.js';
+import { GRIB2_SECTIONS, GRIB2_CODETABLES } from './GRIB2_Sections.js?v=ocean-bitmap-20261118';
 import { JpxImage } from './jpeg2000/src/jpx.js'
 import { Buffer } from './buffer/index.js'
 import { decodeCCSDS } from './CCSDS.js'

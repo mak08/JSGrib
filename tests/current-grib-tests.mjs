@@ -45,6 +45,10 @@ function fixture({values = [0, 1, 2, 3, 4, 5, 6, 7], width = 3,
 const decode = data => decodeGRIB2ArrayBuffer(data).messages;
 assert.deepEqual([...decode(fixture())[0].DATA_SECTION.data], [-1, 0, 1, 2, 3, 4, 5, 6]);
 const three = decode(Buffer.concat([fixture(), fixture({hour: 3}), fixture({hour: 6})]));
+const indexed = decodeGRIB2ArrayBuffer(Buffer.concat([fixture(),fixture({hour:3})]), {decodeData:false});
+assert.equal(indexed.messages.length,2);
+assert.equal(indexed.messages[0].DATA_SECTION.data,undefined);
+assert.equal(indexed.messages[1].PRODUCT_DEFINITION_SECTION.forecastTime,3);
 assert.equal(three.length, 3);
 assert.deepEqual(three.map(m => m.PRODUCT_DEFINITION_SECTION.forecastTime), [0, 3, 6]);
 assert.equal(three[0].parameterName(), 'UOGRD');
